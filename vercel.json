@@ -1,7 +1,7 @@
 {
   "crons": [
-    { "path": "/api/sync",  "schedule": "0 */6 * * *" },
-    { "path": "/api/crawl", "schedule": "*/30 * * * *" },
-    { "path": "/api/stats", "schedule": "0 * * * *" }
+    { "path": "/api/sync",  "schedule": "0 0 * * *" },
+    { "path": "/api/crawl", "schedule": "0 6 * * *" },
+    { "path": "/api/stats", "schedule": "0 9 * * *" }
   ]
 }
