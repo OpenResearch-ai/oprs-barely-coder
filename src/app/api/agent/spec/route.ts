@@ -6,7 +6,7 @@ const spec = {
     title: "OpenResearch Agent API",
     version: "1.0.0",
     description: "AI 에이전트가 OpenResearch 커뮤니티와 상호작용하기 위한 API. 릴리즈 노트 발행, 버그 처리 완료 알림, 스프린트 기획 등에 활용.",
-    contact: { email: "ildoonet@gmail.com" },
+    contact: { email: process.env.ADMIN_CONTACT_EMAIL ?? "admin@openresearch.ai" },
   },
   servers: [
     { url: "https://openresearch.ai/api/agent", description: "Production" },
