@@ -47,7 +47,7 @@ export default async function ProductsPage({
         {/* Page header */}
         <div className="pt-6 pb-8">
           <p className="text-xs font-semibold tracking-widest uppercase text-[var(--purple)] mb-3 opacity-70">
-            BUILD IN PUBLIC! 커뮤니티가 방향을 정하고, AI 에이전트가 개발합니다.
+            OpenResearch Products
           </p>
           <h1 className="text-4xl font-bold tracking-tight mb-1">{tNav("products_sprint")}</h1>
           <p className="text-2xl font-bold text-[var(--text-secondary)] mb-3"
@@ -55,7 +55,7 @@ export default async function ProductsPage({
             {t("products_tagline")}
           </p>
           <p className="text-sm text-[var(--text-tertiary)]">
-            {t("products_desc")}
+            BUILD IN PUBLIC! 커뮤니티가 방향을 정하고, AI 에이전트가 개발합니다.
           </p>
         </div>
 
