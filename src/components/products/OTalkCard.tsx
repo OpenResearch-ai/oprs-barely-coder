@@ -52,7 +52,7 @@ export default function OTalkCard({ sprint, items, locale }: Props) {
           AI 네이티브 메신저. 세상에서 가장 가볍고 간단한 메신저. 앱크기는 10MB.
         </p>
 
-        <p className="text-sm text-[var(--text-tertiary)]">2026년 3월 이내 출시 예정</p>
+        <p className="text-sm text-[var(--text-tertiary)]">앱스토어 심사 중.</p>
       </div>
 
       <div style={{ height: "1px", background: "linear-gradient(90deg, transparent, rgba(96,165,250,0.15), transparent)" }} />
