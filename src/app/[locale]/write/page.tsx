@@ -18,11 +18,13 @@ export default function WritePage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const initProduct = searchParams.get("product") ?? "";
-  // 제품이 선택된 경우 카테고리는 community(중립)로, 제품 없으면 vibe_coding 기본
-  const [category, setCategory] = useState<PostType>(
-    initProduct ? "community" : ((searchParams.get("category") as PostType) ?? "vibe_coding")
+  const initCategory = searchParams.get("category") as PostType | null;
+  // URL에 카테고리/제품이 명시된 경우만 선택, 그 외엔 비워둠
+  const [category, setCategory] = useState<PostType | "">(
+    initProduct ? "community" : (initCategory ?? "")
   );
   const [product, setProduct] = useState(initProduct);
+  const [categoryChangedBy, setCategoryChangedBy] = useState<string | null>(null); // AI 자동완성 알림
   const [title, setTitle] = useState(searchParams.get("title") ?? "");
   const [content, setContent] = useState(searchParams.get("content") ?? "");
   const [url, setUrl] = useState("");
@@ -48,7 +50,17 @@ export default function WritePage() {
       const data = await res.json();
       if (data.title) setTitle(data.title);
       if (data.summary) setContent(data.summary);
-      if (data.category) setCategory(data.category as PostType);
+      if (data.category && data.category !== category) {
+        const prev = category;
+        setCategory(data.category as PostType);
+        if (prev) {
+          // 기존 카테고리가 있었으면 변경 알림
+          setCategoryChangedBy(data.category);
+        } else {
+          // 비어있었으면 그냥 선택 (알림 없음)
+          setCategoryChangedBy(null);
+        }
+      }
       if (data.notice) setUrlNotice(data.notice);
       // Suggest OG image if available and no image selected yet
       if (data.imageUrl && !imageUrl) {
@@ -80,6 +92,7 @@ export default function WritePage() {
   const removeImage = () => { setImageUrl(""); setUploadedImageUrl(""); setOgImageUrl(""); };
 
   const handleSubmit = async () => {
+    if (!category) { setError("카테고리를 선택해주세요."); return; }
     if (!title.trim()) { setError("제목을 입력해주세요."); return; }
     setSubmitting(true); setError("");
     try {
@@ -89,7 +102,7 @@ export default function WritePage() {
         body: JSON.stringify({
           title: title.trim(),
           content: content.trim() || null,
-          post_type: category,
+          post_type: category || "community",
           product: product || null,
           source_url: url.trim() || null,
           image_url: imageUrl || null,
@@ -159,8 +172,21 @@ export default function WritePage() {
 
           {/* ② 카테고리 */}
           <div>
-            <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-2.5">카테고리</label>
-            <CategoryPicker value={category} onChange={v => setCategory(v as PostType)} product={product} onProductChange={setProduct} />
+            <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-2.5">
+              카테고리 <span className="text-red-400">*</span>
+            </label>
+
+            {/* AI 카테고리 변경 알림 */}
+            {categoryChangedBy && (
+              <div className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl text-xs"
+                style={{ background: "var(--purple-light)", color: "var(--purple)" }}>
+                <span>🤖</span>
+                <span>AI가 카테고리를 <strong>{categoryChangedBy}</strong>으로 변경했어요. 맞지 않으면 직접 선택해주세요.</span>
+                <button onClick={() => setCategoryChangedBy(null)} className="ml-auto opacity-60 hover:opacity-100 font-bold shrink-0">×</button>
+              </div>
+            )}
+
+            <CategoryPicker value={category} onChange={v => { setCategory(v as PostType); setCategoryChangedBy(null); }} product={product} onProductChange={setProduct} />
           </div>
 
           {/* ③ 제목 */}
@@ -254,7 +280,7 @@ export default function WritePage() {
           )}
 
           {/* Submit */}
-          <button onClick={handleSubmit} disabled={submitting || !title.trim()}
+          <button onClick={handleSubmit} disabled={submitting || !title.trim() || !category}
             className="w-full py-3.5 text-sm font-semibold text-white rounded-2xl disabled:opacity-50 hover:opacity-90 transition-all"
             style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
             {submitting ? "게시 중..." : "글 올리기"}

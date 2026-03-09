@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
+const DISMISSED_KEY = "or-push-dismissed"; // localStorage key
 
 function urlBase64ToUint8Array(base64: string) {
   const padding = "=".repeat((4 - (base64.length % 4)) % 4);
@@ -12,8 +13,32 @@ function urlBase64ToUint8Array(base64: string) {
   return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
 }
 
+async function registerPush() {
+  try {
+    const reg = await navigator.serviceWorker.register("/sw.js");
+    await navigator.serviceWorker.ready;
+    const existing = await reg.pushManager.getSubscription();
+    const sub = existing ?? await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
+    });
+    await fetch("/api/push/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        endpoint: sub.endpoint,
+        keys: {
+          p256dh: btoa(String.fromCharCode(...new Uint8Array(sub.getKey("p256dh")!))),
+          auth:   btoa(String.fromCharCode(...new Uint8Array(sub.getKey("auth")!))),
+        },
+      }),
+    });
+  } catch (err) {
+    console.error("Push registration failed:", err);
+  }
+}
+
 export default function PushNotificationSetup() {
-  const [permission, setPermission] = useState<NotificationPermission>("default");
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
@@ -21,58 +46,41 @@ export default function PushNotificationSetup() {
     if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
 
     const currentPerm = Notification.permission;
-    setPermission(currentPerm);
 
-    // 로그인 유저이고 아직 허락 안 했으면 3초 뒤 배너 표시
+    // 이미 허용됨 → 조용히 구독만 갱신
+    if (currentPerm === "granted") {
+      registerPush();
+      return;
+    }
+
+    // 거절됨 → 아무것도 하지 않음
+    if (currentPerm === "denied") return;
+
+    // default(미결정) 상태 → 이전에 "나중에" 눌렀는지 확인
+    const dismissed = localStorage.getItem(DISMISSED_KEY);
+    if (dismissed) return; // 이미 닫은 적 있으면 다시 안 띄움
+
+    // 로그인 유저에게만 3초 후 배너
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) return;
-      if (currentPerm === "default") {
-        setTimeout(() => setShowBanner(true), 3000);
-      } else if (currentPerm === "granted") {
-        // 이미 허락된 경우 구독 상태 확인/갱신
-        registerPush(data.user.id);
-      }
+      const timer = setTimeout(() => setShowBanner(true), 3000);
+      return () => clearTimeout(timer);
     });
   }, []);
-
-  const registerPush = async (userId?: string) => {
-    try {
-      const reg = await navigator.serviceWorker.register("/sw.js");
-      await navigator.serviceWorker.ready;
-
-      const existing = await reg.pushManager.getSubscription();
-      const sub = existing ?? await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
-      });
-
-      await fetch("/api/push/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          endpoint: sub.endpoint,
-          keys: {
-            p256dh: btoa(String.fromCharCode(...new Uint8Array(sub.getKey("p256dh")!))),
-            auth: btoa(String.fromCharCode(...new Uint8Array(sub.getKey("auth")!))),
-          },
-        }),
-      });
-    } catch (err) {
-      console.error("Push registration failed:", err);
-    }
-  };
 
   const requestPermission = async () => {
     setShowBanner(false);
     const perm = await Notification.requestPermission();
-    setPermission(perm);
-    if (perm === "granted") {
-      await registerPush();
-    }
+    if (perm === "granted") await registerPush();
   };
 
-  if (!showBanner || permission !== "default") return null;
+  const dismiss = () => {
+    setShowBanner(false);
+    localStorage.setItem(DISMISSED_KEY, "1"); // 다시 안 뜨게
+  };
+
+  if (!showBanner) return null;
 
   return (
     <div
@@ -101,7 +109,7 @@ export default function PushNotificationSetup() {
               style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
               알림 허용
             </button>
-            <button onClick={() => setShowBanner(false)}
+            <button onClick={dismiss}
               className="px-4 py-2 text-xs text-[var(--text-secondary)] rounded-xl hover:bg-[var(--surface)] transition-all">
               나중에
             </button>
