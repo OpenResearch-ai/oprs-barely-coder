@@ -4,7 +4,7 @@ import ChatBot from "@/components/chatbot/ChatBot";
 import PostInteractions from "@/components/posts/PostInteractions";
 import { createClient } from "@/lib/supabase/server";
 import { TYPE_BADGE } from "@/lib/post-categories";
-import { cn } from "@/lib/utils";
+import { cn, extractYouTubeId } from "@/lib/utils";
 import { linkify } from "@/lib/linkify";
 
 type Props = {
@@ -50,7 +50,7 @@ export default async function PostPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main className="max-w-2xl mx-auto px-4 pb-40 page-top">
+      <main className="max-w-6xl mx-auto px-4 pb-40 page-top">
 
         {/* Back */}
         <div className="pt-6 pb-4">
@@ -80,6 +80,20 @@ export default async function PostPage({ params }: Props) {
               </span>
             )}
           </div>
+
+          {/* YouTube 임베드 — source_url이 YouTube인 경우 */}
+          {post.source_url && extractYouTubeId(post.source_url) && (
+            <div className="mb-5 rounded-2xl overflow-hidden border border-[var(--border-light)] bg-black"
+              style={{ aspectRatio: "16/9" }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${extractYouTubeId(post.source_url)}?rel=0`}
+                title={post.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          )}
 
           {/* Title + URL (HN style) */}
           <h1 className="text-2xl font-bold leading-snug mb-1">{post.title}</h1>

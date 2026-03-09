@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getYouTubeThumbnail } from "@/lib/utils";
 import PostCreateModal from "@/components/community/PostCreateModal";
 import { useHighlight } from "@/lib/highlight-context";
 import { usePageActionListener, type PageAction } from "@/lib/page-actions";
@@ -411,13 +411,19 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
                   </p>
                   </div>{/* inner flex-1 end */}
 
-                  {/* 썸네일 — 오른쪽 고정 */}
-                  {post.image_url && (
-                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gray-50 self-center">
-                      <img src={post.image_url} alt="" className="w-full h-full object-cover"
-                        onError={e => { (e.currentTarget.parentElement!.style.display="none"); }} />
-                    </div>
-                  )}
+                  {/* 썸네일 — 이미지 있으면 우선, 없으면 YouTube 썸네일 자동 */}
+                  {(() => {
+                    const thumb = post.image_url ||
+                      (post.source_url ? getYouTubeThumbnail(post.source_url) : null);
+                    if (!thumb) return null;
+                    const isYt = !post.image_url && !!post.source_url;
+                    return (
+                      <div className={`rounded-xl overflow-hidden shrink-0 self-center bg-gray-50 ${isYt ? "w-24 h-14" : "w-16 h-16"}`}>
+                        <img src={thumb} alt="" className="w-full h-full object-cover"
+                          onError={e => { (e.currentTarget.parentElement!.style.display="none"); }} />
+                      </div>
+                    );
+                  })()}
                 </div>{/* outer flex gap-3 end */}
               </article>
             );
