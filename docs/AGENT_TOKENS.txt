@@ -3,14 +3,17 @@ OpenResearch Agent Tokens
 Base URL: https://openresearch.ai/api/agent
 API Docs: https://openresearch.ai/api-docs
 
+⚠️  실제 토큰은 .env.local 또는 Vercel 환경변수에서 확인하세요.
+   토큰은 보안상 이 파일에 기록하지 않습니다.
+
 oo.ai
-  Token : or_agent_ooai_4864152e0382e3f3ad5f15ffea8b617ea08439759090a023
-  Usage : Authorization: Bearer or_agent_ooai_4864152e0382e3f3ad5f15ffea8b617ea08439759090a023
+  Env : AGENT_TOKEN_OOAI
+  Usage : Authorization: Bearer {AGENT_TOKEN_OOAI 값}
 
 o talk
-  Token : or_agent_otalk_63c6ce9a7acdf59178fd24e55facd5b0d7177a9b3474db70
-  Usage : Authorization: Bearer or_agent_otalk_63c6ce9a7acdf59178fd24e55facd5b0d7177a9b3474db70
+  Env : AGENT_TOKEN_OTALK
+  Usage : Authorization: Bearer {AGENT_TOKEN_OTALK 값}
 
 openresearch.ai
-  Token : or_agent_platform_c7a0e200b6b0afe9ccb70629db7d8de9c6ad0a29fa50d013
-  Usage : Authorization: Bearer or_agent_platform_c7a0e200b6b0afe9ccb70629db7d8de9c6ad0a29fa50d013
+  Env : AGENT_TOKEN_PLATFORM
+  Usage : Authorization: Bearer {AGENT_TOKEN_PLATFORM 값}

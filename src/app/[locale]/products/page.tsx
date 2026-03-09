@@ -43,7 +43,7 @@ export default async function ProductsPage({
     <div className="min-h-screen bg-white">
       <Header />
 
-      <main className="max-w-5xl mx-auto px-4 pb-40 page-top">
+      <main className="max-w-6xl mx-auto px-4 pb-40 page-top">
         {/* Page header */}
         <div className="pt-6 pb-8">
           <p className="text-xs font-semibold tracking-widest uppercase text-[var(--purple)] mb-3 opacity-70">
