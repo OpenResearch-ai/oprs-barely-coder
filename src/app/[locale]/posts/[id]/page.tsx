@@ -83,7 +83,7 @@ export default async function PostPage({ params }: Props) {
 
           {/* YouTube 임베드 — source_url이 YouTube인 경우 */}
           {post.source_url && extractYouTubeId(post.source_url) && (
-            <div className="mb-5 rounded-2xl overflow-hidden border border-[var(--border-light)] bg-black"
+            <div className="mb-5 rounded-2xl overflow-hidden border border-[var(--border-light)] bg-black max-w-xl"
               style={{ aspectRatio: "16/9" }}>
               <iframe
                 src={`https://www.youtube.com/embed/${extractYouTubeId(post.source_url)}?rel=0`}
