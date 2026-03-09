@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "community": "Community",
+    "products": "Products",
+    "sprint": "Sprint",
+    "tickets": "Tickets",
+    "about": "About",
+    "products_sprint": "Products & Sprint"
+  },
+  "hero": {
+    "badge": "An AI company built with vibe coding",
+    "title": "Can't Code\na Lick",
+    "subtitle": "Agents do the work. Everyone builds together.",
+    "description": "OpenResearch is not a 1-person company, nor a 0-person company — it's a company run by agents. You don't need to code. You just need ideas.",
+    "cta_community": "Join Community",
+    "cta_products": "Our Products"
+  },
+  "chat": {
+    "placeholder": "Talk about OpenResearch products, AI news, or vibe coding — anything goes",
+    "send": "Send",
+    "close": "Close",
+    "open": "Ask AI",
+    "title": "OpenResearch AI",
+    "subtitle": "Ask about products, report bugs, request features",
+    "welcome": "Hi! I'm the OpenResearch AI. Ask me about oo.ai or o talk, suggest features, or report bugs. I'm here to help."
+  },
+  "community": {
+    "title": "Community",
+    "new_post": "New Post",
+    "filters": {
+      "all": "All",
+      "vibe_coding": "Vibe Coding",
+      "ai": "AI",
+      "llm": "LLM",
+      "feature": "Feature Request",
+      "bug": "Bug Report"
+    },
+    "sort": {
+      "hot": "Hot",
+      "new": "New",
+      "top": "Top"
+    },
+    "upvotes": "upvotes",
+    "comments": "comments"
+  },
+  "sprint": {
+    "title": "This Week's Sprint",
+    "week": "2025 W10",
+    "in_progress": "In Progress",
+    "done": "Done",
+    "planned": "Planned"
+  },
+  "products": {
+    "title": "Products",
+    "oo_ai": {
+      "name": "oo.ai",
+      "description": "Fastest AI search",
+      "status": "Live"
+    },
+    "o_talk": {
+      "name": "o talk",
+      "description": "AI messenger",
+      "status": "Coming Soon"
+    }
+  },
+  "ticket": {
+    "create": "Create Ticket",
+    "type": {
+      "feature": "Feature Request",
+      "bug": "Bug Report",
+      "question": "Question"
+    }
+  },
+  "ui": {
+    "community_title": "Community",
+    "write": "Write",
+    "filter_all": "All",
+    "no_posts": "No posts yet",
+    "no_posts_desc": "Share vibe coding experiences, AI tips, or product feedback.",
+    "write_first": "Write the first post",
+    "search_placeholder": "Search community...",
+    "products_tagline": "Can't code a lick",
+    "products_desc": "Community sets the direction, AI agents do the work.",
+    "community_equals_sprint": "Community = Sprint",
+    "community_sprint_desc": "Your feedback shapes the next sprint.",
+    "sprint_update": "Coming soon",
+    "login": "Login"
+  }
+}

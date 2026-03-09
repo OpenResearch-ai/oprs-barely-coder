@@ -1,0 +1,101 @@
+@import "tailwindcss";
+/* Pretendard is loaded via <link> in layout.tsx */
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --surface: #f8f8fc;
+  --border: #e8e8f0;
+  --border-light: #f0f0f8;
+  --text-secondary: #6b7080;
+  --text-tertiary: #a0a4b8;
+
+  --purple: #474aff;
+  --purple-2: #a54bff;
+  --purple-light: #f0f0ff;
+  --purple-muted: #8789ff;
+  --purple-glow: rgba(71, 74, 255, 0.12);
+  --purple-glow-strong: rgba(71, 74, 255, 0.25);
+  --gradient: linear-gradient(135deg, #474aff, #a54bff);
+
+  /* Header heights */
+  --header-h: 56px;          /* desktop */
+  --header-h-mobile: 88px;   /* mobile = top bar + bottom nav */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-purple: var(--purple);
+  --color-purple-light: var(--purple-light);
+  --font-sans: "Pretendard", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Pretendard", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Page top padding — accounts for fixed header */
+.page-top {
+  padding-top: var(--header-h-mobile);
+}
+@media (min-width: 768px) {
+  .page-top {
+    padding-top: var(--header-h);
+  }
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(185%);
+  -webkit-backdrop-filter: blur(24px) saturate(185%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07), 0 1px 2px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.5);
+}
+
+.chat-input-glow {
+  box-shadow: 0 0 0 1px var(--border), 0 4px 24px var(--purple-glow);
+  transition: box-shadow 0.2s ease;
+}
+.chat-input-glow:focus-within {
+  box-shadow: 0 0 0 1.5px var(--purple-muted), 0 4px 32px var(--purple-glow-strong);
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.prose-chat p { margin: 0 0 0.5em; line-height: 1.6; }
+.prose-chat p:last-child { margin-bottom: 0; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+@keyframes orb-path {
+  0%   { left: 0%;   top: 0%;   transform: translate(-50%,-50%) rotate(0deg)   scale(1);   border-radius: 40% 60% 50% 50%/50% 40% 60% 50%; }
+  25%  { left: 100%; top: 0%;   transform: translate(-50%,-50%) rotate(90deg)  scale(1.1); border-radius: 60% 40% 40% 60%/50% 60% 40% 50%; }
+  50%  { left: 100%; top: 100%; transform: translate(-50%,-50%) rotate(180deg) scale(1);   border-radius: 50% 50% 60% 40%/60% 50% 50% 40%; }
+  75%  { left: 0%;   top: 100%; transform: translate(-50%,-50%) rotate(270deg) scale(1.1); border-radius: 40% 60% 50% 50%/50% 40% 60% 50%; }
+  100% { left: 0%;   top: 0%;   transform: translate(-50%,-50%) rotate(360deg) scale(1);   border-radius: 40% 60% 50% 50%/50% 40% 60% 50%; }
+}
+
+.animate-fade-in  { animation: fade-in 0.3s ease forwards; }
+.animate-slide-up { animation: slide-up 0.4s ease forwards; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }

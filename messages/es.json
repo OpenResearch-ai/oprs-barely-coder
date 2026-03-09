@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "community": "Comunidad",
+    "products": "Productos",
+    "sprint": "Sprint",
+    "tickets": "Tickets",
+    "about": "Acerca de",
+    "products_sprint": "Productos & Sprint"
+  },
+  "hero": {
+    "badge": "Una empresa de IA construida con vibe coding",
+    "title": "Sin saber\nprogramar",
+    "subtitle": "Los agentes trabajan. Todos construyen juntos.",
+    "description": "OpenResearch no es una empresa de 1 persona, ni de 0 — es una empresa dirigida por agentes. No necesitas saber programar. Solo necesitas ideas.",
+    "cta_community": "Únete a la comunidad",
+    "cta_products": "Ver productos"
+  },
+  "chat": {
+    "placeholder": "Habla de productos OpenResearch, noticias de IA o vibe coding — lo que quieras",
+    "send": "Enviar",
+    "close": "Cerrar",
+    "open": "Preguntar a la IA",
+    "title": "OpenResearch AI",
+    "subtitle": "Consultas, reportes de bugs, solicitudes de funciones",
+    "welcome": "¡Hola! Soy el AI de OpenResearch. Pregúntame sobre oo.ai o o talk, sugiere funciones o reporta bugs. Estoy aquí para ayudar."
+  },
+  "community": {
+    "title": "Comunidad",
+    "new_post": "Nueva publicación",
+    "filters": {
+      "all": "Todo",
+      "vibe_coding": "Vibe Coding",
+      "ai": "IA",
+      "llm": "LLM",
+      "feature": "Solicitud de función",
+      "bug": "Reporte de bug"
+    },
+    "sort": {
+      "hot": "Popular",
+      "new": "Nuevo",
+      "top": "Top"
+    },
+    "upvotes": "votos",
+    "comments": "comentarios"
+  },
+  "sprint": {
+    "title": "Sprint de esta semana",
+    "week": "2025 S10",
+    "in_progress": "En progreso",
+    "done": "Hecho",
+    "planned": "Planeado"
+  },
+  "products": {
+    "title": "Productos",
+    "oo_ai": {
+      "name": "oo.ai",
+      "description": "Búsqueda IA más rápida",
+      "status": "En vivo"
+    },
+    "o_talk": {
+      "name": "o talk",
+      "description": "Mensajería IA",
+      "status": "Próximamente"
+    }
+  },
+  "ticket": {
+    "create": "Crear ticket",
+    "type": {
+      "feature": "Solicitud de función",
+      "bug": "Reporte de bug",
+      "question": "Pregunta"
+    }
+  },
+  "ui": {
+    "community_title": "Comunidad",
+    "write": "Escribir",
+    "filter_all": "Todo",
+    "no_posts": "Aún no hay publicaciones",
+    "no_posts_desc": "Comparte experiencias de vibe coding, tips de IA o feedback de productos.",
+    "write_first": "Escribe la primera publicación",
+    "search_placeholder": "Buscar en la comunidad...",
+    "products_tagline": "Sin saber programar",
+    "products_desc": "La comunidad marca el rumbo, los agentes IA desarrollan.",
+    "community_equals_sprint": "Comunidad = Sprint",
+    "community_sprint_desc": "Tu feedback se refleja en el próximo sprint.",
+    "sprint_update": "Próximamente",
+    "login": "Iniciar sesión"
+  }
+}

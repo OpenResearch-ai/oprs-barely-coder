@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "community": "コミュニティ",
+    "products": "プロダクト",
+    "sprint": "スプリント",
+    "tickets": "チケット",
+    "about": "について",
+    "products_sprint": "プロダクト & スプリント"
+  },
+  "hero": {
+    "badge": "バイブコーディングで作るAI企業",
+    "title": "コードなんて\n書けなくていい",
+    "subtitle": "エージェントが働き、みんなで作る会社",
+    "description": "OpenResearchは1人でも0人でもない — エージェントが動かす会社です。コードは不要。アイデアだけあれば大丈夫。",
+    "cta_community": "コミュニティに参加",
+    "cta_products": "プロダクトを見る"
+  },
+  "chat": {
+    "placeholder": "OpenResearchのプロダクト、AIニュース、バイブコーディングなど何でもどうぞ",
+    "send": "送信",
+    "close": "閉じる",
+    "open": "AIに質問",
+    "title": "OpenResearch AI",
+    "subtitle": "プロダクトの質問、バグ報告、機能リクエスト",
+    "welcome": "こんにちは！OpenResearch AIです。oo.aiやo talkについて質問したり、機能を提案したり、バグを報告したりしてください。"
+  },
+  "community": {
+    "title": "コミュニティ",
+    "new_post": "新規投稿",
+    "filters": {
+      "all": "すべて",
+      "vibe_coding": "バイブコーディング",
+      "ai": "AI",
+      "llm": "LLM",
+      "feature": "機能リクエスト",
+      "bug": "バグレポート"
+    },
+    "sort": {
+      "hot": "人気",
+      "new": "新着",
+      "top": "トップ"
+    },
+    "upvotes": "いいね",
+    "comments": "コメント"
+  },
+  "sprint": {
+    "title": "今週のスプリント",
+    "week": "2025 W10",
+    "in_progress": "進行中",
+    "done": "完了",
+    "planned": "予定"
+  },
+  "products": {
+    "title": "プロダクト",
+    "oo_ai": {
+      "name": "oo.ai",
+      "description": "最速AIサーチ",
+      "status": "ライブ"
+    },
+    "o_talk": {
+      "name": "o talk",
+      "description": "AIメッセンジャー",
+      "status": "近日公開"
+    }
+  },
+  "ticket": {
+    "create": "チケット作成",
+    "type": {
+      "feature": "機能リクエスト",
+      "bug": "バグ報告",
+      "question": "質問"
+    }
+  },
+  "ui": {
+    "community_title": "コミュニティ",
+    "write": "投稿",
+    "filter_all": "すべて",
+    "no_posts": "まだ投稿がありません",
+    "no_posts_desc": "バイブコーディング、AIのヒント、製品フィードバックをシェアしましょう。",
+    "write_first": "最初の投稿を書く",
+    "search_placeholder": "コミュニティを検索...",
+    "products_tagline": "コードは書けなくていい",
+    "products_desc": "コミュニティが方向を決め、AIエージェントが開発します。",
+    "community_equals_sprint": "コミュニティ = スプリント",
+    "community_sprint_desc": "あなたの意見が次のスプリントに反映されます。",
+    "sprint_update": "準備中",
+    "login": "ログイン"
+  }
+}

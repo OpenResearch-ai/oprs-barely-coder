@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "community": "社区",
+    "products": "产品",
+    "sprint": "冲刺",
+    "tickets": "工单",
+    "about": "关于",
+    "products_sprint": "产品 & 冲刺"
+  },
+  "hero": {
+    "badge": "用氛围编程构建的AI公司",
+    "title": "不会写代码\n又怎样",
+    "subtitle": "AI智能体工作，所有人共同构建",
+    "description": "OpenResearch不是一人公司，也不是零人公司 — 是由AI智能体驱动的公司。不需要会编程，只需要有想法。",
+    "cta_community": "加入社区",
+    "cta_products": "查看产品"
+  },
+  "chat": {
+    "placeholder": "随便聊 — OpenResearch产品、AI新闻、氛围编程都可以",
+    "send": "发送",
+    "close": "关闭",
+    "open": "问AI",
+    "title": "OpenResearch AI",
+    "subtitle": "产品咨询、Bug报告、功能请求",
+    "welcome": "你好！我是OpenResearch AI。可以向我询问oo.ai或o talk，提出功能建议，或者报告Bug。随时为您服务。"
+  },
+  "community": {
+    "title": "社区",
+    "new_post": "发帖",
+    "filters": {
+      "all": "全部",
+      "vibe_coding": "氛围编程",
+      "ai": "AI",
+      "llm": "LLM",
+      "feature": "功能请求",
+      "bug": "Bug报告"
+    },
+    "sort": {
+      "hot": "热门",
+      "new": "最新",
+      "top": "最高"
+    },
+    "upvotes": "赞",
+    "comments": "评论"
+  },
+  "sprint": {
+    "title": "本周冲刺",
+    "week": "2025 W10",
+    "in_progress": "进行中",
+    "done": "已完成",
+    "planned": "计划中"
+  },
+  "products": {
+    "title": "产品",
+    "oo_ai": {
+      "name": "oo.ai",
+      "description": "最快的AI搜索",
+      "status": "已上线"
+    },
+    "o_talk": {
+      "name": "o talk",
+      "description": "AI即时通讯",
+      "status": "即将推出"
+    }
+  },
+  "ticket": {
+    "create": "创建工单",
+    "type": {
+      "feature": "功能请求",
+      "bug": "Bug报告",
+      "question": "问题"
+    }
+  },
+  "ui": {
+    "community_title": "社区",
+    "write": "发帖",
+    "filter_all": "全部",
+    "no_posts": "暂无帖子",
+    "no_posts_desc": "分享氛围编程经验、AI技巧或产品反馈。",
+    "write_first": "写第一篇帖子",
+    "search_placeholder": "搜索社区...",
+    "products_tagline": "不会写代码又怎样",
+    "products_desc": "社区决定方向，AI智能体负责开发。",
+    "community_equals_sprint": "社区 = 冲刺",
+    "community_sprint_desc": "您的反馈将反映到下一个冲刺中。",
+    "sprint_update": "即将推出",
+    "login": "登录"
+  }
+}
