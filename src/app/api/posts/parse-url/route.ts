@@ -67,6 +67,45 @@ function decode(str: string): string {
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ");
 }
 
+// ── YouTube oEmbed + 썸네일 분석 ────────────────────────────────
+function extractYouTubeId(url: string): string | null {
+  const patterns = [
+    /youtu\.be\/([^?&]+)/,
+    /youtube\.com\/watch\?v=([^&]+)/,
+    /youtube\.com\/shorts\/([^?&]+)/,
+    /youtube\.com\/embed\/([^?&]+)/,
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+async function fetchYouTubeMeta(url: string): Promise<PageMeta | null> {
+  const videoId = extractYouTubeId(url);
+  if (!videoId) return null;
+
+  try {
+    // oEmbed API로 제목/채널 가져오기
+    const oEmbedRes = await fetch(
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!oEmbedRes.ok) return null;
+    const oEmbed = await oEmbedRes.json();
+
+    return {
+      title: oEmbed.title ?? "",
+      description: `${oEmbed.author_name} 채널`,
+      siteName: "YouTube",
+      imageUrl: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+      videoUrl: url,
+      text: oEmbed.title ?? "",
+    };
+  } catch { return null; }
+}
+
 // ── Gemini multimodal image analysis ──────────────────────────
 async function analyzeImage(imageUrl: string, context: string): Promise<string> {
   if (!imageUrl) return "";
@@ -121,7 +160,9 @@ export async function POST(req: NextRequest) {
     : "사용자가 선택한 카테고리: 없음 (AI가 적절히 판단)";
 
   try {
-    const meta = await fetchPageMeta(url);
+    // YouTube URL은 전용 파서로 처리
+    const ytMeta = await fetchYouTubeMeta(url);
+    const meta = ytMeta ?? await fetchPageMeta(url);
 
     // Analyze image/video thumbnail with Gemini multimodal
     const mediaUrl = meta.imageUrl || meta.videoUrl;
@@ -137,6 +178,7 @@ export async function POST(req: NextRequest) {
       !meta.title && !imageAnalysis && meta.text && `본문: ${meta.text.slice(0, 600)}`,
     ].filter(Boolean).join("\n");
 
+    const isYouTube = !!ytMeta;
     const isBlocked = !meta.title || meta.title === meta.siteName || meta.title === "Instagram";
     const notice = isBlocked && !imageAnalysis
       ? "이 링크는 내용을 자동으로 읽어올 수 없어요. 직접 제목과 내용을 수정해주세요."
@@ -145,7 +187,7 @@ export async function POST(req: NextRequest) {
     const prompt = `다음 정보를 바탕으로 오픈리서치 커뮤니티(AI, 바이브코딩)에 올릴 한국어 포스트를 만들어주세요.
 
 URL: ${url}
-플랫폼: ${meta.siteName}
+플랫폼: ${meta.siteName}${isYouTube ? " (YouTube 영상)" : ""}
 ${categoryHint}
 ${context}
 
