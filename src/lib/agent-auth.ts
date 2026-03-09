@@ -1,49 +1,48 @@
-import { createHash, randomBytes } from "crypto";
-import { createServiceClient } from "@/lib/supabase/server";
+/**
+ * Agent authentication — simple hardcoded tokens per service.
+ * No DB needed. Tokens live in env vars.
+ *
+ * Each token maps to a service with display name and logo path.
+ */
 
 export interface AgentContext {
-  keyId: string;
-  serviceName: string;
-  displayName: string;
-  avatarEmoji: string;
+  serviceName: string;   // "oo.ai" | "o talk" | "platform"
+  displayName: string;   // shown as post/comment author
+  logoPath: string;      // path to logo image in /public
+  product: string;       // product field for posts
   permissions: string[];
 }
 
-function hashKey(key: string): string {
-  return createHash("sha256").update(key).digest("hex");
-}
+// Hardcoded service definitions
+const AGENTS: Record<string, AgentContext> = {
+  [process.env.AGENT_TOKEN_OOAI ?? "__disabled__"]: {
+    serviceName: "oo.ai",
+    displayName: "oo.ai",
+    logoPath: "/ooai_logo.webp",
+    product: "oo.ai",
+    permissions: ["read", "write", "comment"],
+  },
+  [process.env.AGENT_TOKEN_OTALK ?? "__disabled__"]: {
+    serviceName: "o talk",
+    displayName: "o talk",
+    logoPath: "/otalk_logo.jpg",
+    product: "o talk",
+    permissions: ["read", "write", "comment"],
+  },
+  [process.env.AGENT_TOKEN_PLATFORM ?? "__disabled__"]: {
+    serviceName: "openresearch",
+    displayName: "OpenResearch",
+    logoPath: "/oprs_logo.jpeg",
+    product: "platform",
+    permissions: ["read", "write", "comment"],
+  },
+};
 
-/** Generate a new API key for an agent service */
-export function generateApiKey(): string {
-  return `or_agent_${randomBytes(32).toString("hex")}`;
-}
-
-/** Verify API key from Authorization header and return agent context */
-export async function verifyAgentKey(authHeader: string | null): Promise<AgentContext | null> {
+/** Verify Bearer token from Authorization header */
+export function verifyAgentKey(authHeader: string | null): AgentContext | null {
   if (!authHeader?.startsWith("Bearer ")) return null;
-  const key = authHeader.slice(7);
-  const hash = hashKey(key);
-
-  const db = createServiceClient();
-  const { data } = await db
-    .from("agent_api_keys")
-    .select("id, service_name, display_name, avatar_emoji, permissions")
-    .eq("key_hash", hash)
-    .eq("is_active", true)
-    .single();
-
-  if (!data) return null;
-
-  // Update last_used_at
-  db.from("agent_api_keys").update({ last_used_at: new Date().toISOString() }).eq("id", data.id).then(() => {});
-
-  return {
-    keyId: data.id,
-    serviceName: data.service_name,
-    displayName: data.display_name,
-    avatarEmoji: data.avatar_emoji ?? "🤖",
-    permissions: data.permissions ?? ["read"],
-  };
+  const token = authHeader.slice(7).trim();
+  return AGENTS[token] ?? null;
 }
 
 export function hasPermission(agent: AgentContext, perm: string): boolean {
