@@ -1,0 +1,16 @@
+OpenResearch Agent Tokens
+=========================
+Base URL: https://openresearch.ai/api/agent
+API Docs: https://openresearch.ai/api-docs
+
+oo.ai
+  Token : or_agent_ooai_4864152e0382e3f3ad5f15ffea8b617ea08439759090a023
+  Usage : Authorization: Bearer or_agent_ooai_4864152e0382e3f3ad5f15ffea8b617ea08439759090a023
+
+o talk
+  Token : or_agent_otalk_63c6ce9a7acdf59178fd24e55facd5b0d7177a9b3474db70
+  Usage : Authorization: Bearer or_agent_otalk_63c6ce9a7acdf59178fd24e55facd5b0d7177a9b3474db70
+
+openresearch.ai
+  Token : or_agent_platform_c7a0e200b6b0afe9ccb70629db7d8de9c6ad0a29fa50d013
+  Usage : Authorization: Bearer or_agent_platform_c7a0e200b6b0afe9ccb70629db7d8de9c6ad0a29fa50d013
