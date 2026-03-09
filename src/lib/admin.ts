@@ -1,4 +1,11 @@
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS ?? "")
+// NEXT_PUBLIC_ prefix required so client components can read it
+// The email being visible in public code is acceptable (not a secret)
+const raw =
+  process.env.NEXT_PUBLIC_ADMIN_EMAILS ??
+  process.env.ADMIN_EMAILS ??
+  "";
+
+const ADMIN_EMAILS = raw
   .split(",")
   .map(e => e.trim().toLowerCase())
   .filter(Boolean);
