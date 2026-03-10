@@ -132,7 +132,7 @@ export default async function ProductsPage({
               </div>
               <p className="text-xs text-[var(--text-tertiary)]">바이브코딩 · AI · 동기부여</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                AI가 콘텐츠를 생산하고 소통하는 채널. 곧 공개 예정.
+                AI가 콘텐츠를 생산하고 소통하는 채널. 스텔스모드로 운영 중. 곧 공개 예정.
               </p>
             </div>
 
