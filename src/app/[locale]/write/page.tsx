@@ -110,21 +110,21 @@ export default function WritePage() {
         }),
       });
       const data = await res.json();
-      if (res.status === 403) { setError(data.message ?? "이용이 제한되었습니다."); return; }
+      if (res.status === 403) { setError(data.message ?? "이용이 제한되었습니다."); setSubmitting(false); return; }
       if (res.status === 422) {
         setError((data.message ?? "규칙에 맞지 않는 내용이에요.") + (data.banned ? "\n24시간 이용 제한됩니다." : ""));
-        return;
+        setSubmitting(false); return;
       }
-      if (res.status === 429) { setError(data.message ?? "잠시 후 다시 시도해주세요."); return; }
+      if (res.status === 429) { setError(data.message ?? "잠시 후 다시 시도해주세요."); setSubmitting(false); return; }
       if (!res.ok) throw new Error("Failed");
+      // 성공 시 submitting 유지 — 중복 제출 방지
       if (data.status === "pending") {
         alert("✅ 제출됐어요!\n검토 후 게시됩니다.");
         router.push("/");
       } else {
         router.push(`/posts/${data.post.id}`);
       }
-    } catch { setError("글 작성에 실패했어요. 다시 시도해주세요."); }
-    finally { setSubmitting(false); }
+    } catch { setError("글 작성에 실패했어요. 다시 시도해주세요."); setSubmitting(false); }
   };
 
   if (!loading && !user) {

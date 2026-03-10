@@ -78,11 +78,11 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Failed");
+        // 성공 시 loading 유지 — 중복 제출 방지
         onSuccess();
         onClose();
       } catch (err) {
         setError(String(err));
-      } finally {
         setLoading(false);
       }
       return;
@@ -121,6 +121,7 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
       }
       if (!res.ok) throw new Error("Failed");
 
+      // 성공 시 loading 유지 — 중복 제출 방지
       onSuccess();
       onClose();
       if (data.status === "pending") {
@@ -130,7 +131,6 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
       }
     } catch {
       setError("글 작성에 실패했어요. 다시 시도해주세요.");
-    } finally {
       setLoading(false);
     }
   };
