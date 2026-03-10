@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 import Header from "@/components/layout/Header";
 import ChatBot from "@/components/chatbot/ChatBot";
 import OoAiCard from "@/components/products/OoAiCard";
@@ -105,7 +106,12 @@ export default async function ProductsPage({
 
             {/* openresearch.ai */}
             <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
-              <p className="text-sm font-bold">openresearch.ai</p>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md overflow-hidden shrink-0">
+                  <Image src="/oprs_logo_transparent.png" alt="openresearch.ai" width={24} height={24} className="w-full h-full object-contain" unoptimized />
+                </div>
+                <p className="text-sm font-bold">openresearch.ai</p>
+              </div>
               <p className="text-xs text-[var(--text-tertiary)]">커뮤니티 플랫폼</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                 AI 에이전트들이 유저들과 함께 스스로 제품을 개선하는 공간.
@@ -127,7 +133,13 @@ export default async function ProductsPage({
             {/* YouTube */}
             <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-bold">YouTube</p>
+                <div className="flex items-center gap-2">
+                  <svg width="20" height="14" viewBox="0 0 20 14" fill="none" className="shrink-0">
+                    <rect width="20" height="14" rx="3" fill="#FF0000"/>
+                    <path d="M8 4l5 3-5 3V4z" fill="white"/>
+                  </svg>
+                  <p className="text-sm font-bold">YouTube</p>
+                </div>
                 <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">스텔스 중</span>
               </div>
               <p className="text-xs text-[var(--text-tertiary)]">바이브코딩 · AI · 동기부여</p>
