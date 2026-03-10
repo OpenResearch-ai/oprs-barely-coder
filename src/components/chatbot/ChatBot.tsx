@@ -373,7 +373,7 @@ export default function ChatBot({ pageContext }: Props) {
             onFocus={() => setIsOpen(true)}
             placeholder={t("placeholder")}
             rows={1}
-            className="flex-1 bg-transparent text-sm resize-none outline-none placeholder:text-[var(--text-tertiary)] leading-relaxed"
+            className="flex-1 bg-transparent text-[16px] resize-none outline-none placeholder:text-[var(--text-tertiary)] leading-relaxed"
             style={{ maxHeight: "100px", minHeight: "22px" }}
           />
 
