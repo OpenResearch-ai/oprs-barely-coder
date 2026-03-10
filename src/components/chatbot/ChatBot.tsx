@@ -103,7 +103,7 @@ export default function ChatBot({ pageContext }: Props) {
     const { name, args } = toolCall;
     switch (name) {
       case "navigate_page":
-        window.location.href = `/${locale}${args.page === "community" ? "" : "/" + args.page}`;
+        window.location.href = `${args.page === "community" ? "/" : "/" + args.page}`;
         break;
       case "filter_community":
         dispatchPageAction({ type: "filter_community", filter: String(args.filter ?? "all") });
@@ -121,7 +121,7 @@ export default function ChatBot({ pageContext }: Props) {
         if (args.content)  p.set("content",  String(args.content));
         if (args.category) p.set("category", String(args.category));
         const qs = p.toString();
-        window.location.href = `/${locale}/write${qs ? `?${qs}` : ""}`;
+        window.location.href = `/write${qs ? `?${qs}` : ""}`;
         break;
       }
       case "clear_filters":
@@ -135,7 +135,7 @@ export default function ChatBot({ pageContext }: Props) {
         }).catch(console.error);
         break;
     }
-  }, [locale, setHighlight]);
+  }, [setHighlight]);
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;

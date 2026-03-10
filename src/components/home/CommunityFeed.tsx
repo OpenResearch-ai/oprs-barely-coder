@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
@@ -79,7 +79,6 @@ const STATIC_FILTERS: Omit<FilterItem, "href">[] = [
 ];
 
 export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) {
-  const locale = useLocale();
   const t = useTranslations("ui");
   const router = useRouter();
   const ALL_I18N: FilterItem = { ...ALL_BASE, label: t("filter_all") };
@@ -109,7 +108,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
   const FILTERS: FilterItem[] = STATIC_FILTERS.map(f => ({
     ...f,
     href: f.kind === "product" && f.key !== "prop"
-      ? `/${locale}/community?product=${f.value === "o talk" ? "o+talk" : f.value}`
+      ? `/community?product=${f.value === "o talk" ? "o+talk" : f.value}`
       : undefined,
   }));
 
@@ -257,7 +256,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
 
           {/* 글쓰기 */}
           <button
-            onClick={() => router.push(`/${locale}/write${active.kind === 'product' ? '?product=' + encodeURIComponent(active.value) : active.kind === 'type' ? '?category=' + active.value : ''}`)}
+            onClick={() => router.push(`/write${active.kind === 'product' ? '?product=' + encodeURIComponent(active.value) : active.kind === 'type' ? '?category=' + active.value : ''}`)}
             className="px-3.5 py-1.5 text-white text-xs font-semibold rounded-full shrink-0 hover:opacity-90 transition-all"
             style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
             {t("write")}
@@ -339,7 +338,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
             const hl = isPostHighlighted(post.id);
             return (
               <article key={post.id} id={`post-${post.id}`}
-                onClick={() => window.location.href = `/${locale}/posts/${post.id}`}
+                onClick={() => window.location.href = `/posts/${post.id}`}
                 className={cn(
                   "group flex gap-3 p-4 bg-white border rounded-2xl transition-all cursor-pointer animate-fade-in",
                   hl
@@ -445,7 +444,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
           <p className="text-sm font-semibold mb-1">{t("no_posts")}</p>
           <p className="text-xs text-[var(--text-tertiary)] mb-5">{t("no_posts_desc")}</p>
           <button
-            onClick={() => router.push(`/${locale}/write${active.kind === 'product' ? '?product=' + encodeURIComponent(active.value) : active.kind === 'type' ? '?category=' + active.value : ''}`)}
+            onClick={() => router.push(`/write${active.kind === 'product' ? '?product=' + encodeURIComponent(active.value) : active.kind === 'type' ? '?category=' + active.value : ''}`)}
             className="px-5 py-2.5 text-sm font-semibold text-white rounded-full hover:opacity-90 transition-all"
             style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
             {t("write_first")}

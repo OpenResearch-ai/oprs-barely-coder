@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +18,6 @@ interface Props {
 }
 
 function Toast({ n, onDismiss }: { n: ToastNotification; onDismiss: () => void }) {
-  const locale = useLocale();
   const [visible, setVisible] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
@@ -38,7 +36,7 @@ function Toast({ n, onDismiss }: { n: ToastNotification; onDismiss: () => void }
 
   return (
     <div
-      onClick={() => { window.location.href = `/${locale}/posts/${n.postId}`; }}
+      onClick={() => { window.location.href = `/posts/${n.postId}`; }}
       className={cn(
         "flex items-start gap-3 p-4 rounded-2xl cursor-pointer transition-all duration-300",
         "w-80 max-w-[calc(100vw-2rem)]",

@@ -54,7 +54,7 @@ export default async function PostPage({ params }: Props) {
 
         {/* Back */}
         <div className="pt-6 pb-4">
-          <a href={`/${locale}`}
+          <a href="/"
             className="inline-flex items-center gap-1.5 text-xs text-[var(--text-tertiary)] hover:text-[var(--foreground)] transition-colors">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>

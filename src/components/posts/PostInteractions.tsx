@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { isAdmin } from "@/lib/admin";
 import LoginModal from "@/components/auth/LoginModal";
@@ -65,7 +64,6 @@ function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
 
 export default function PostInteractions({ postId, authorId, initialUpvotes, initialComments }: Props) {
   const router = useRouter();
-  const locale = useLocale();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -167,7 +165,7 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
     if (!confirm("이 글을 삭제할까요?")) return;
     setDeleting(true);
     const res = await fetch(`/api/posts/${postId}`, { method: "DELETE" });
-    if (res.ok) router.push(`/${locale}`);
+    if (res.ok) router.push("/");
     else setDeleting(false);
   };
 

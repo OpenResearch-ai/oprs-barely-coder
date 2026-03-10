@@ -118,7 +118,7 @@ export async function POST(
         sendPushToUser(postData.author_id, {
           title: "새 댓글이 달렸어요!",
           body: `${authorName}: ${comment.content.slice(0, 80)}`,
-          url: `/ko/posts/${postId}`,
+          url: `/posts/${postId}`,
           tag: `comment-${postId}`,
         }).catch(console.error);
       }

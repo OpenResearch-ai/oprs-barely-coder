@@ -1,10 +1,9 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 export default function Hero() {
   const t = useTranslations("hero");
-  const locale = useLocale();
 
   const titleLines = t("title").split("\n");
 
@@ -61,13 +60,13 @@ export default function Hero() {
         {/* CTAs */}
         <div className="flex flex-wrap items-center gap-3">
           <a
-            href={`/${locale}/community`}
+            href="/community"
             className="px-5 py-2.5 bg-[var(--purple)] text-white text-sm font-medium rounded-full hover:bg-purple-700 transition-all hover:shadow-lg hover:shadow-purple-200"
           >
             {t("cta_community")}
           </a>
           <a
-            href={`/${locale}/products`}
+            href="/products"
             className="px-5 py-2.5 bg-[var(--surface)] border border-[var(--border)] text-sm font-medium rounded-full hover:border-[var(--purple-muted)] transition-all"
           >
             {t("cta_products")}

@@ -6,13 +6,11 @@ import Header from "@/components/layout/Header";
 import ChatBot from "@/components/chatbot/ChatBot";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
 import { isAdmin } from "@/lib/admin";
 
 export default function ProfilePage() {
   const supabase = createClient();
   const router = useRouter();
-  const locale = useLocale();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [user, setUser] = useState<any>(null);
@@ -25,7 +23,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) { router.push(`/${locale}`); return; }
+      if (!data.user) { router.push("/"); return; }
       setUser(data.user);
       setName(data.user.user_metadata?.name ?? data.user.user_metadata?.user_name ?? "");
       setAvatarUrl(data.user.user_metadata?.avatar_url ?? null);
@@ -71,7 +69,7 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    window.location.href = `/${locale}`;
+    window.location.href = "/";
   };
 
   if (!user) return (

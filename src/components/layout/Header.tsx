@@ -49,20 +49,18 @@ export default function Header() {
       return;
     }
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
-    const segments = pathname.split("/");
-    segments[1] = newLocale;
-    window.location.href = segments.join("/") || `/${newLocale}`;
+    window.location.reload();
   };
 
   const NAV = [
-    { key: "community",       label: t("community"),       href: `/${locale}` },
-    { key: "products_sprint", label: t("products_sprint"), href: `/${locale}/products` },
+    { key: "community",       label: t("community"),       href: "/" },
+    { key: "products_sprint", label: t("products_sprint"), href: "/products" },
     // 소개 페이지 임시 비활성화
-    // { key: "about",        label: t("about"),           href: `/${locale}/about` },
+    // { key: "about",        label: t("about"),           href: "/about" },
   ];
 
   const isActive = (href: string) => {
-    if (href === `/${locale}`) return pathname === href || pathname.startsWith(`/${locale}/community`);
+    if (href === "/") return pathname === "/" || pathname.startsWith("/community");
     return pathname.startsWith(href);
   };
 
@@ -137,7 +135,7 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center gap-3">
 
         {/* Logo */}
-        <a href={`/${locale}`} className="flex items-center gap-2 shrink-0">
+        <a href="/" className="flex items-center gap-2 shrink-0">
           <div className="w-7 h-7 rounded-full overflow-hidden" style={{ aspectRatio: "1/1" }}>
             <Image src="/oprs_logo.jpeg" alt="OpenResearch" width={28} height={28}
               className="w-full h-full object-contain" />

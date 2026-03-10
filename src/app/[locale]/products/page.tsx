@@ -9,12 +9,7 @@ import type { Sprint, SprintItem } from "@/lib/supabase/types";
 
 export const revalidate = 300;
 
-export default async function ProductsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+export default async function ProductsPage() {
   const supabase = await createClient();
   const t = await getTranslations("ui");
   const tNav = await getTranslations("nav");
@@ -86,15 +81,15 @@ export default async function ProductsPage({
 
         {/* 대표작 — oo.ai + o talk 상단 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-          <OoAiCard sprint={activeSprint} items={items} locale={locale} />
-          <OTalkCard sprint={activeSprint} items={items} locale={locale} />
+          <OoAiCard sprint={activeSprint} items={items} />
+          <OTalkCard sprint={activeSprint} items={items} />
         </div>
 
         {/* Vibes */}
         <div className="mt-12">
           <div className="flex items-center gap-3 mb-4">
             <p className="text-xs font-semibold tracking-widest uppercase text-[var(--text-tertiary)]">Vibes</p>
-            <a href={`/${locale}?category=etc`}
+            <a href="/?category=etc"
               className="flex items-center gap-1 text-xs text-[var(--text-tertiary)] hover:text-[var(--purple)] transition-colors group">
               커뮤니티
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="group-hover:translate-x-0.5 transition-transform">

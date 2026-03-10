@@ -7,10 +7,9 @@ import type { Sprint, SprintItem } from "@/lib/supabase/types";
 interface Props {
   sprint: Sprint | null;
   items: SprintItem[];
-  locale: string;
 }
 
-export default function OTalkCard({ sprint, items, locale }: Props) {
+export default function OTalkCard({ sprint, items }: Props) {
   return (
     <div className="relative flex flex-col rounded-3xl overflow-hidden"
       style={{
@@ -62,7 +61,7 @@ export default function OTalkCard({ sprint, items, locale }: Props) {
 
       <div className="p-7" style={{ background: "rgba(96,165,250,0.02)" }}>
         <SprintItems items={items} product="o talk" weekLabel={sprint?.week_label} hasSprint={!!sprint}
-        communityHref={`/${locale}/community?product=o+talk`} />
+        communityHref="/community?product=o+talk" />
       </div>
     </div>
   );

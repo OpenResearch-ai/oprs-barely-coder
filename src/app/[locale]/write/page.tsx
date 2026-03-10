@@ -119,16 +119,16 @@ export default function WritePage() {
       if (!res.ok) throw new Error("Failed");
       if (data.status === "pending") {
         alert("✅ 제출됐어요!\n검토 후 게시됩니다.");
-        router.push(`/${locale}`);
+        router.push("/");
       } else {
-        router.push(`/${locale}/posts/${data.id}`);
+        router.push(`/posts/${data.id}`);
       }
     } catch { setError("글 작성에 실패했어요. 다시 시도해주세요."); }
     finally { setSubmitting(false); }
   };
 
   if (!loading && !user) {
-    return <LoginModal onClose={() => router.push(`/${locale}`)} redirectTo={`/${locale}/write`} />;
+    return <LoginModal onClose={() => router.push("/")} redirectTo="/write" />;
   }
   if (loading) return (
     <div className="min-h-screen bg-white flex items-center justify-center">

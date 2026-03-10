@@ -7,10 +7,9 @@ import type { Sprint, SprintItem } from "@/lib/supabase/types";
 interface Props {
   sprint: Sprint | null;
   items: SprintItem[];
-  locale: string;
 }
 
-export default function SiteCard({ sprint, items, locale }: Props) {
+export default function SiteCard({ sprint, items }: Props) {
   return (
     <div className="relative flex flex-col rounded-3xl overflow-hidden"
       style={{
@@ -78,7 +77,7 @@ export default function SiteCard({ sprint, items, locale }: Props) {
             weekLabel={sprint?.week_label}
             hasSprint={!!sprint}
             dark
-            communityHref={`/${locale}/community?product=platform`}
+            communityHref="/community?product=platform"
           />
         </div>
       </div>

@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
 import { useAuth } from "@/hooks/useAuth";
 import { isAdmin } from "@/lib/admin";
 import LoginModal from "./LoginModal";
 
 export default function AuthButton() {
   const { user, loading, signOut } = useAuth();
-  const locale = useLocale();
   const [showLogin, setShowLogin] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
@@ -75,7 +73,7 @@ export default function AuthButton() {
               )}
             </div>
 
-            <a href={`/${locale}/profile`}
+            <a href="/profile"
               onClick={() => setShowMenu(false)}
               className="flex items-center gap-2 px-3 py-2 text-xs text-[var(--foreground)] hover:bg-[var(--surface)] transition-all">
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
