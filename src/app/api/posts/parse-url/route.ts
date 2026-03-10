@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
       meta.title && `제목: ${meta.title}`,
       meta.description && `설명: ${meta.description}`,
       imageAnalysis && `이미지 분석: ${imageAnalysis}`,
-      meta.text && `본문: ${meta.text.slice(0, 1200)}`,
+      meta.text && `본문: ${meta.text.slice(0, 2500)}`,
     ].filter(Boolean).join("\n");
 
     const isYouTube = !!ytMeta;
@@ -191,18 +191,21 @@ URL: ${url}
 ${categoryHint}
 ${context}
 
-## 작성 스타일 규칙 (필수)
+## 작성 형식 (필수)
 - 말투: ~함. ~임. ~됨. ~있음. 형태로 간결하게 (경어 금지)
-- 형식: 첫 줄에 핵심 한 문장 → 이후 개조식 목록 (- 또는 번호)으로 상세 설명
-- 길이: 6~10줄 분량. 핵심 포인트를 충분히 담을 것
-- 목록 항목은 단순 나열 말고, 각 항목마다 이유/의미/수치 등 구체적인 내용 포함
+- 구조:
+  1) **TL;DR:** 로 시작하는 5줄 이내 핵심 요약
+  2) 빈 줄 하나
+  3) 상세 내용: 길이 제한 없음. 개조식 목록 (- 또는 번호)으로 풍부하게 작성. 각 항목에 이유/의미/수치 포함
 - 예시:
-  "AI 에이전트로 직원 없이 회사 운영 중. 맥 미니 10대로 인건비 90% 절감.
-  - 기존 직원 10명 대신 AI 에이전트 팀으로 전환, 월 운영비 $3천 수준
-  - 에이전트가 코드 작성, 고객 응대, 마케팅까지 자동 처리
-  - 창업자는 프롬프트 설계와 전략에만 집중하는 구조
-  - AI 네이티브 스타트업의 실제 운영 사례로 주목받는 중
-  - 이 모델이 소규모 창업자들의 새 기준이 될 가능성 있음"
+  "TL;DR: AI 에이전트로 직원 없이 회사 운영 중. 맥 미니 10대로 인건비 90% 절감. 에이전트가 개발·운영·마케팅 전담. 창업자는 전략에만 집중. 소규모 AI 네이티브 스타트업의 새 기준 제시.
+
+  - 기존 직원 10명 대신 AI 에이전트 팀 전환, 월 운영비 $3천 수준으로 감소
+  - 에이전트가 코드 작성, 고객 응대, 콘텐츠 마케팅까지 자동 처리
+  - 창업자는 프롬프트 설계와 사업 전략에만 집중하는 구조로 재편
+  - 맥 미니 10대 기반 온프레미스 인프라로 클라우드 비용도 절감
+  - 이 모델이 1인 창업자들의 실질적인 선택지로 자리잡을 가능성 높음
+  - 기존 SaaS 스타트업 구조와 근본적으로 다른 패러다임 제시"
 
 ## 카테고리 선택 기준
 - vibe_coding: 바이브코딩, 노코드, AI로 뭔가 만든 경험/팁
@@ -224,7 +227,7 @@ Output JSON only:
     const response = await ai.models.generateContent({
       model: "gemini-3.1-flash-lite-preview",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
-      config: { maxOutputTokens: 900, responseMimeType: "application/json" },
+      config: { maxOutputTokens: 2000, responseMimeType: "application/json" },
     });
 
     const parsed = JSON.parse(response.text ?? "{}");

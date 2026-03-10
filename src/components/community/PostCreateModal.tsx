@@ -32,6 +32,7 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
   const [content, setContent] = useState(draft?.content ?? "");
   const [postType, setPostType] = useState<PostType>((draft?.category as PostType) ?? "vibe_coding");
   const [product, setProduct] = useState(initialProduct ?? "");
+  const [prefix, setPrefix] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -87,12 +88,16 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
     setLoading(true);
     setError("");
 
+    const finalTitle = (postType === "etc" && prefix)
+      ? `[${prefix}] ${title.trim()}`
+      : title.trim();
+
     try {
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: title.trim(),
+          title: finalTitle,
           content: content.trim() || null,
           post_type: postType,
           product: product || null,
@@ -212,7 +217,26 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
               )}
 
               {/* Category — same component as write page & community feed */}
-              <CategoryPicker value={postType} onChange={(key) => setPostType(key as PostType)} />
+              <CategoryPicker value={postType} onChange={(key) => { setPostType(key as PostType); setPrefix(""); }} />
+
+              {/* 말머리 — 기타 카테고리 선택 시 표시 */}
+              {postType === "etc" && (
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider shrink-0">말머리</span>
+                  {(["없음", "OpenResearch 커뮤니티", "Oh Taro", "서비스제안"] as const).map(p => (
+                    <button key={p} type="button"
+                      onClick={() => setPrefix(p === "없음" ? "" : p)}
+                      className={cn(
+                        "px-2.5 py-1 text-xs font-medium rounded-full border transition-all",
+                        (p === "없음" ? prefix === "" : prefix === p)
+                          ? "border-[var(--purple)] bg-[var(--purple)] text-white"
+                          : "bg-[var(--surface)] text-[var(--text-tertiary)] border-[var(--border-light)] hover:border-[var(--border)]"
+                      )}>
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* Title */}
               <div>
