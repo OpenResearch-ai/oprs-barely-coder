@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
       author_id: user.id,
       author_name: authorName,
       author_avatar: user.user_metadata?.avatar_url ?? null,
-      post_type: post_type ?? "community",
+      post_type: (post_type === "etc" ? "free" : post_type) ?? "community",
       product: product ?? null,
       tags: [],
       locale: locale ?? "ko",
