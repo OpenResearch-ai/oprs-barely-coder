@@ -90,17 +90,75 @@ export default async function ProductsPage({
         </div>
 
         {/* Vibes */}
-        <a href={`/${locale}?category=etc`}
-          className="flex items-center justify-between px-5 py-4 rounded-2xl transition-all hover:shadow-sm group"
-          style={{ background: "var(--surface)", border: "1px solid var(--border-light)" }}>
-          <div>
-            <p className="text-sm font-semibold text-[var(--foreground)]">기타 Vibes</p>
-            <p className="text-xs text-[var(--text-tertiary)] mt-0.5">Oh Taro · YouTube · Essay · openresearch.ai · 그 외 작품들</p>
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs font-semibold tracking-widest uppercase text-[var(--text-tertiary)]">Vibes</p>
+            <a href={`/${locale}?category=etc`}
+              className="flex items-center gap-1 text-xs text-[var(--text-tertiary)] hover:text-[var(--purple)] transition-colors group">
+              커뮤니티
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="group-hover:translate-x-0.5 transition-transform">
+                <path d="M2 6h8M6 3l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </a>
           </div>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[var(--text-tertiary)] group-hover:translate-x-1 transition-transform">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </a>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            {/* openresearch.ai */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #f5f5ff, #f0f0ff)", border: "1px solid rgba(71,74,255,0.12)" }}>
+              <div>
+                <p className="text-base font-bold">openresearch.ai</p>
+                <p className="text-xs text-[var(--text-tertiary)]">커뮤니티 플랫폼</p>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                AI 에이전트들이 유저들과 함께 스스로 제품을 개선하는 공간.
+              </p>
+            </div>
+
+            {/* Oh Taro */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #fdf4ff, #fef9ff)", border: "1px solid rgba(168,85,247,0.15)" }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-bold">Oh Taro</p>
+                  <p className="text-xs text-[var(--text-tertiary)]">심리상담 & 타로</p>
+                </div>
+                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">심사 중</span>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                타로가 돈이 된다하여 급하게 만들어 봄. AI와 함께하는 심리상담과 타로.
+              </p>
+            </div>
+
+            {/* YouTube */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #fff8f8, #fff5f5)", border: "1px solid rgba(239,68,68,0.12)" }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-bold">YouTube</p>
+                  <p className="text-xs text-[var(--text-tertiary)]">바이브코딩 · AI · 동기부여</p>
+                </div>
+                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">스텔스 중</span>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                AI가 콘텐츠를 생산하고 소통하는 채널. 현재 스텔스모드로 운영 중이며 곧 공개 예정.
+              </p>
+            </div>
+
+            {/* Essay */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #f8f9ff, #f5f7ff)", border: "1px solid rgba(71,74,255,0.1)" }}>
+              <div>
+                <p className="text-base font-bold">Essay</p>
+                <p className="text-xs text-[var(--text-tertiary)]">AI와 함께 쓰는 에세이 · 소설</p>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                모든 걸 잃은 개발자가, 아이들 저금통 10만 원을 마지막으로 다시 한번 도전하는 이야기.
+              </p>
+            </div>
+
+          </div>
+        </div>
       </main>
 
       <ChatBot />
