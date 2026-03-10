@@ -191,10 +191,10 @@ export default function WritePage() {
 
           {/* ③ 제목 */}
           <div>
-            <textarea value={title} onChange={e => { if (e.target.value.length <= 100) { setTitle(e.target.value); setError(""); } }}
+            <textarea value={title} onChange={e => { if (e.target.value.length <= 100) { setTitle(e.target.value); setError(""); const t = e.target; t.style.height = "auto"; t.style.height = t.scrollHeight + "px"; } }}
               placeholder="제목을 입력하세요"
-              rows={2} maxLength={100}
-              className="w-full text-xl font-bold outline-none resize-none placeholder:text-[var(--text-tertiary)] leading-snug bg-transparent" />
+              rows={1} maxLength={100}
+              className="w-full text-xl font-bold outline-none resize-none placeholder:text-[var(--text-tertiary)] leading-snug bg-transparent overflow-hidden" />
             <div className={`text-[10px] text-right mt-1 ${title.length >= 90 ? "text-orange-500" : "text-[var(--text-tertiary)]"}`}>
               {title.length}/100
             </div>
