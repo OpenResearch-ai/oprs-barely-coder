@@ -108,7 +108,7 @@ export default async function ProductsPage({
             <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-md overflow-hidden shrink-0">
-                  <Image src="/oprs_logo_transparent.png" alt="openresearch.ai" width={24} height={24} className="w-full h-full object-contain" unoptimized />
+                  <Image src="/oprs_logo.jpeg" alt="openresearch.ai" width={24} height={24} className="w-full h-full object-cover rounded-md" unoptimized />
                 </div>
                 <p className="text-sm font-bold">openresearch.ai</p>
               </div>
