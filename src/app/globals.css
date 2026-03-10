@@ -19,8 +19,8 @@
   --gradient: linear-gradient(135deg, #474aff, #a54bff);
 
   /* Header heights */
-  --header-h: 56px;          /* desktop */
-  --header-h-mobile: 88px;   /* mobile = top bar + bottom nav */
+  --header-h: 56px;
+  --header-h-mobile: 56px;
 }
 
 @theme inline {

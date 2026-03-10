@@ -71,11 +71,8 @@ const STATIC_FILTERS: Omit<FilterItem, "href">[] = [
   ...communityCategories.map(c => ({
     key: c.key, label: c.label, group: "community" as const, kind: "type" as const, value: c.key,
   })),
-  // Product links first: oo.ai, o talk, openresearch
-  { key: "ooai",  label: "oo.ai",        group: "or" as const, kind: "product" as const, value: "oo.ai",    logo: "/ooai_logo.webp" },
-  { key: "talk",  label: "o talk",       group: "or" as const, kind: "product" as const, value: "o talk",   logo: "/otalk_logo.jpg" },
-  { key: "plat",  label: "openresearch", group: "or" as const, kind: "product" as const, value: "platform", logo: "/oprs_logo.jpeg" },
-  // 서비스 제안 마지막
+  { key: "ooai",  label: "oo.ai",  group: "or" as const, kind: "product" as const, value: "oo.ai",  logo: "/ooai_logo.webp" },
+  { key: "talk",  label: "o talk", group: "or" as const, kind: "product" as const, value: "o talk", logo: "/otalk_logo.jpg" },
   ...orCategories.map(c => ({
     key: c.key, label: c.label, group: "or" as const, kind: "type" as const, value: c.key,
   })),
@@ -229,16 +226,35 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
   return (
     <>
       {/* ── Filter bar + 글쓰기 ── */}
-      <div className="pt-5 pb-1">
-        {/* Row 1: 전체 + community filters + 글쓰기 */}
+      <div className="pt-3 pb-1">
         <div className="flex items-center gap-2">
-          <div className="flex-1 min-w-0 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            <div className="flex items-center gap-1.5 w-max">
+          {/* Desktop: 한 줄 / Mobile: 두 줄 */}
+          <div className="flex-1 min-w-0">
+            {/* Desktop — 전체+커뮤니티+기타 한 줄 */}
+            <div className="hidden md:flex items-center gap-1.5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
               <Chip f={ALL} />
               <div className="w-px h-4 bg-[var(--border)] shrink-0 mx-0.5" />
               {communityFilters.map(f => <Chip key={f.key} f={f} />)}
+              <div className="w-px h-4 bg-[var(--border)] shrink-0 mx-0.5" />
+              {orFilters.map(f => <Chip key={f.key} f={f} />)}
+            </div>
+
+            {/* Mobile — Row 1 */}
+            <div className="md:hidden overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+              <div className="flex items-center gap-1.5 w-max">
+                <Chip f={ALL} />
+                <div className="w-px h-4 bg-[var(--border)] shrink-0 mx-0.5" />
+                {communityFilters.map(f => <Chip key={f.key} f={f} />)}
+              </div>
+            </div>
+            {/* Mobile — Row 2 */}
+            <div className="md:hidden overflow-x-auto mt-1.5" style={{ scrollbarWidth: "none" }}>
+              <div className="flex items-center gap-1.5 w-max">
+                {orFilters.map(f => <Chip key={f.key} f={f} />)}
+              </div>
             </div>
           </div>
+
           {/* 글쓰기 */}
           <button
             onClick={() => router.push(`/${locale}/write${active.kind === 'product' ? '?product=' + encodeURIComponent(active.value) : active.kind === 'type' ? '?category=' + active.value : ''}`)}
@@ -246,13 +262,6 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
             style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
             {t("write")}
           </button>
-        </div>
-
-        {/* Row 2: OR filters */}
-        <div className="overflow-x-auto mt-1.5" style={{ scrollbarWidth: "none" }}>
-          <div className="flex items-center gap-1.5 w-max">
-            {orFilters.map(f => <Chip key={f.key} f={f} />)}
-          </div>
         </div>
 
         {/* Author filter badge */}

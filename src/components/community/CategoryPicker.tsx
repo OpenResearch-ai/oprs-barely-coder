@@ -1,14 +1,20 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/post-categories";
 
 interface Props {
-  value: string;            // post_type (빈 문자열이면 미선택)
+  value: string;
   onChange: (key: string) => void;
   product?: string;
   onProductChange?: (product: string) => void;
 }
+
+const WRITE_PRODUCTS = [
+  { key: "oo.ai",  label: "oo.ai",  logo: "/ooai_logo.webp" },
+  { key: "o talk", label: "o talk", logo: "/otalk_logo.jpg" },
+];
 
 // 미선택 상태 스타일 (회색)
 const UNSELECTED = "bg-[var(--surface)] text-[var(--text-tertiary)] border-[var(--border-light)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]";
@@ -47,6 +53,24 @@ export default function CategoryPicker({ value, onChange, product, onProductChan
         <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider shrink-0 w-24">
           기타
         </span>
+
+        {/* 제품 태그 — 글쓰기 모달에서만 표시 */}
+        {onProductChange && WRITE_PRODUCTS.map(p => {
+          const isSelected = product === p.key;
+          return (
+            <button key={p.key} type="button"
+              onClick={() => { isSelected ? onProductChange("") : (onProductChange(p.key), onChange("community")); }}
+              className={cn(
+                "inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full border transition-all",
+                isSelected ? SELECTED : UNSELECTED
+              )}>
+              <span className="w-3 h-3 rounded-sm overflow-hidden shrink-0 inline-flex">
+                <Image src={p.logo} alt={p.label} width={12} height={12} className="object-cover" unoptimized />
+              </span>
+              {p.label}
+            </button>
+          );
+        })}
 
         {orGroups.map(cat => {
           const isSelected = value === cat.key && !product;

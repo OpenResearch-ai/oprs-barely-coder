@@ -216,8 +216,11 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
                 </button>
               )}
 
-              {/* Category — same component as write page & community feed */}
-              <CategoryPicker value={postType} onChange={(key) => { setPostType(key as PostType); setPrefix(""); }} />
+              {/* Category */}
+              <CategoryPicker
+                value={postType} onChange={(key) => { setPostType(key as PostType); setPrefix(""); }}
+                product={product} onProductChange={(p) => setProduct(p)}
+              />
 
               {/* 말머리 — 기타 카테고리 선택 시 표시 */}
               {postType === "etc" && (
@@ -252,14 +255,6 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
                 placeholder="내용 (선택)"
                 rows={4}
                 className="w-full text-sm outline-none resize-none placeholder:text-[var(--text-tertiary)] bg-[var(--surface)] rounded-xl p-3 leading-relaxed" />
-
-              {/* Product */}
-              <select value={product} onChange={e => setProduct(e.target.value)}
-                className="w-full text-sm bg-[var(--surface)] rounded-xl px-3 py-2.5 outline-none border border-[var(--border-light)]">
-                {PRODUCTS.map(({ value, label }) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
 
               {/* Author */}
               <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[var(--surface)] border border-[var(--border-light)]">

@@ -15,10 +15,9 @@ export const metadata: Metadata = {
   description: "An AI company built with vibe coding. Community for vibe coders, AI enthusiasts, and LLM hackers.",
   metadataBase: new URL("https://openresearch.ai"),
   icons: {
-    icon: "/oprs_logo.jpeg",
-    apple: "/oprs_logo.jpeg",
-    shortcut: "/oprs_logo.jpeg",
-    other: [{ rel: "icon", url: "/oprs_logo.jpeg" }],
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
+    shortcut: "/icon.png",
   },
   openGraph: {
     title: "OpenResearch — 코딩은 쥐뿔도 안하지만",
@@ -37,6 +36,8 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/png" href="/icon.png" />
+        <link rel="shortcut icon" href="/icon.png" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
