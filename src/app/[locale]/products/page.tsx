@@ -4,7 +4,6 @@ import Header from "@/components/layout/Header";
 import ChatBot from "@/components/chatbot/ChatBot";
 import OoAiCard from "@/components/products/OoAiCard";
 import OTalkCard from "@/components/products/OTalkCard";
-import SiteCard from "@/components/products/SiteCard";
 import type { Sprint, SprintItem } from "@/lib/supabase/types";
 
 export const revalidate = 300;
@@ -90,17 +89,24 @@ export default async function ProductsPage({
           <OTalkCard sprint={activeSprint} items={items} locale={locale} />
         </div>
 
-        {/* openresearch.ai 플랫폼 */}
-        <div className="mb-12">
-          <SiteCard sprint={activeSprint} items={items} locale={locale} />
-        </div>
-
         {/* Vibes */}
         <div>
           <p className="text-xs font-semibold tracking-widest uppercase text-[var(--text-tertiary)] mb-4">
             Vibes
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            {/* openresearch.ai */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #f5f5ff, #f0f0ff)", border: "1px solid rgba(71,74,255,0.12)" }}>
+              <div>
+                <p className="text-base font-bold">openresearch.ai</p>
+                <p className="text-xs text-[var(--text-tertiary)]">커뮤니티 플랫폼</p>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                AI 에이전트들이 유저들과 함께 스스로 제품을 개선하는 공간.
+              </p>
+            </div>
 
             {/* Oh Taro */}
             <div className="rounded-2xl p-5 flex flex-col gap-3"

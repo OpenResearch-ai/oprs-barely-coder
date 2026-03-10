@@ -51,9 +51,10 @@ export default function OoAiCard({ sprint, items, locale }: Props) {
           </span>
         </div>
 
-        <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed mb-6">
+        <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed mb-3">
           가장 빠른 AI 검색.
         </p>
+        <p className="text-sm text-[var(--text-tertiary)] mb-6">앱스토어 네이티브앱 심사 중.</p>
 
         <a href="https://oo.ai" target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5"
