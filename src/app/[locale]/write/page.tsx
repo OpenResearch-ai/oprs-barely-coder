@@ -121,7 +121,7 @@ export default function WritePage() {
         alert("✅ 제출됐어요!\n검토 후 게시됩니다.");
         router.push("/");
       } else {
-        router.push(`/posts/${data.id}`);
+        router.push(`/posts/${data.post.id}`);
       }
     } catch { setError("글 작성에 실패했어요. 다시 시도해주세요."); }
     finally { setSubmitting(false); }
