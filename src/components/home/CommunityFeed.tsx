@@ -230,38 +230,29 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
     <>
       {/* ── Filter bar + 글쓰기 ── */}
       <div className="pt-5 pb-1">
-        {/*
-          Layout:
-          - Desktop wide: all in one scrollable row with dividers
-          - Narrow: community row + OR row (flex-wrap splits at the divider)
-        */}
-        <div className="flex items-start gap-2">
-          {/* Filter rows */}
-          <div className="flex-1 min-w-0 flex flex-wrap gap-y-1.5 gap-x-0 items-center">
-            {/* Row 1: 전체 + community filters */}
-            <div className="flex items-center gap-1.5 overflow-x-auto shrink-0" style={{ scrollbarWidth: "none" }}>
+        {/* Row 1: 전체 + community filters + 글쓰기 */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 min-w-0 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+            <div className="flex items-center gap-1.5 w-max">
               <Chip f={ALL} />
               <div className="w-px h-4 bg-[var(--border)] shrink-0 mx-0.5" />
               {communityFilters.map(f => <Chip key={f.key} f={f} />)}
             </div>
-
-            {/* Gap between rows when wrapping */}
-            <div className="w-1.5 shrink-0" />
-
-            {/* Row 2: OR filters — wraps here when narrow */}
-            <div className="flex items-center gap-1.5 overflow-x-auto shrink-0" style={{ scrollbarWidth: "none" }}>
-              <div className="w-px h-4 bg-[var(--border)] shrink-0 mx-0.5 hidden sm:block" />
-              {orFilters.map(f => <Chip key={f.key} f={f} />)}
-            </div>
           </div>
-
           {/* 글쓰기 */}
           <button
             onClick={() => router.push(`/${locale}/write${active.kind === 'product' ? '?product=' + encodeURIComponent(active.value) : active.kind === 'type' ? '?category=' + active.value : ''}`)}
-            className="px-3.5 py-1.5 text-white text-xs font-semibold rounded-full shrink-0 hover:opacity-90 transition-all mt-0.5"
+            className="px-3.5 py-1.5 text-white text-xs font-semibold rounded-full shrink-0 hover:opacity-90 transition-all"
             style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
             {t("write")}
           </button>
+        </div>
+
+        {/* Row 2: OR filters */}
+        <div className="overflow-x-auto mt-1.5" style={{ scrollbarWidth: "none" }}>
+          <div className="flex items-center gap-1.5 w-max">
+            {orFilters.map(f => <Chip key={f.key} f={f} />)}
+          </div>
         </div>
 
         {/* Author filter badge */}

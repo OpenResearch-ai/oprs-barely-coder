@@ -161,12 +161,20 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Mobile: current page name */}
-        <div className="md:hidden flex-1 min-w-0">
-          <span className="text-sm font-semibold truncate">
-            {NAV.find(n => isActive(n.href))?.label ?? t("community")}
-          </span>
-        </div>
+        {/* Mobile nav — inline in header */}
+        <nav className="md:hidden flex items-center gap-0.5 flex-1 min-w-0">
+          {NAV.map(({ key, label, href }) => (
+            <a key={key} href={href}
+              className={cn(
+                "px-2.5 py-1 text-xs rounded-lg transition-all truncate",
+                isActive(href)
+                  ? "text-[var(--foreground)] font-semibold bg-[var(--surface)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--foreground)]"
+              )}>
+              {label}
+            </a>
+          ))}
+        </nav>
 
         <div className="flex-1 hidden md:block" />
 
@@ -207,20 +215,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile bottom tab */}
-      <div className="md:hidden flex border-t border-[var(--border-light)]">
-        {NAV.map(({ key, label, href }) => (
-          <a key={key} href={href}
-            className={cn(
-              "flex-1 py-2 text-center text-xs transition-all",
-              isActive(href)
-                ? "text-[var(--purple)] font-semibold border-b-2 border-[var(--purple)]"
-                : "text-[var(--text-tertiary)]"
-            )}>
-            {label}
-          </a>
-        ))}
-      </div>
     </header>
     </>
   );
