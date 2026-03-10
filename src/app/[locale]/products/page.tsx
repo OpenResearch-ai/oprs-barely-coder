@@ -84,31 +84,68 @@ export default async function ProductsPage({
           </div>
         )}
 
-        {/* Cards — openresearch.ai first, full width */}
-        <div className="space-y-5">
-          <SiteCard sprint={activeSprint} items={items} locale={locale} />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <OoAiCard sprint={activeSprint} items={items} locale={locale} />
-            <OTalkCard sprint={activeSprint} items={items} locale={locale} />
-          </div>
+        {/* 대표작 — oo.ai + o talk 상단 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+          <OoAiCard sprint={activeSprint} items={items} locale={locale} />
+          <OTalkCard sprint={activeSprint} items={items} locale={locale} />
         </div>
 
-        {/* Bottom note: community = sprint */}
-        <a href={`/${locale}/community`}
-          className="mt-8 flex items-center gap-4 p-5 rounded-2xl transition-all hover:shadow-md group"
-          style={{ background: "linear-gradient(135deg, #f0f0ff, #f8f0ff)", border: "1px solid rgba(71,74,255,0.12)" }}>
-          <div className="shrink-0 text-2xl">💬</div>
-          <div className="flex-1">
-            <p className="text-sm font-bold text-[var(--purple)] mb-0.5">{t("community_equals_sprint")}</p>
-            <p className="text-xs text-purple-700 leading-relaxed">
-              {t("community_sprint_desc")}
-            </p>
+        {/* openresearch.ai 플랫폼 */}
+        <div className="mb-12">
+          <SiteCard sprint={activeSprint} items={items} locale={locale} />
+        </div>
+
+        {/* Vibes */}
+        <div>
+          <p className="text-xs font-semibold tracking-widest uppercase text-[var(--text-tertiary)] mb-4">
+            Vibes
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            {/* Oh Taro */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #fdf4ff, #fef9ff)", border: "1px solid rgba(168,85,247,0.15)" }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-bold">Oh Taro</p>
+                  <p className="text-xs text-[var(--text-tertiary)]">심리상담 & 타로</p>
+                </div>
+                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">심사 중</span>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                AI와 함께하는 심리상담과 타로. 당신의 마음을 들어줍니다.
+              </p>
+            </div>
+
+            {/* YouTube */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #fff8f8, #fff5f5)", border: "1px solid rgba(239,68,68,0.12)" }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-bold">YouTube</p>
+                  <p className="text-xs text-[var(--text-tertiary)]">바이브코딩 · AI · 동기부여</p>
+                </div>
+                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">스텔스 중</span>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                AI가 콘텐츠를 생산하고 소통하는 채널. 현재 스텔스모드로 운영 중이며 곧 공개 예정.
+              </p>
+            </div>
+
+            {/* Essay */}
+            <div className="rounded-2xl p-5 flex flex-col gap-3"
+              style={{ background: "linear-gradient(135deg, #f8f9ff, #f5f7ff)", border: "1px solid rgba(71,74,255,0.1)" }}>
+              <div>
+                <p className="text-base font-bold">Essay</p>
+                <p className="text-xs text-[var(--text-tertiary)]">AI와 함께 쓰는 에세이 · 소설</p>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                모든 걸 잃은 개발자가, 아이들 저금통 10만 원을 마지막으로 다시 한번 도전하는 이야기.
+              </p>
+            </div>
+
           </div>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[var(--purple)] group-hover:translate-x-1 transition-transform">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </a>
+        </div>
       </main>
 
       <ChatBot />

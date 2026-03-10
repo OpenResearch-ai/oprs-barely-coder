@@ -48,8 +48,11 @@ export default function OTalkCard({ sprint, items, locale }: Props) {
           </span>
         </div>
 
-        <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed mb-6">
-          AI 네이티브 메신저. 세상에서 가장 가볍고 간단한 메신저. 앱크기는 10MB.
+        <p className="text-[15px] font-semibold text-[var(--foreground)] leading-snug mb-3">
+          카카오톡은 왜 무겁고 느리고 쓸데없는 기능 투성이일까?
+        </p>
+        <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-6">
+          AI 네이티브 메신저. 세상에서 가장 가볍고 간단한 메신저. 앱 크기 10MB.
         </p>
 
         <p className="text-sm text-[var(--text-tertiary)]">앱스토어 심사 중.</p>
