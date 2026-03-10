@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import LoginModal from "@/components/auth/LoginModal";
@@ -25,6 +27,8 @@ const PRODUCTS = [
 
 export default function PostCreateModal({ onClose, onSuccess, initialProduct, draft }: Props) {
   const { user } = useAuth();
+  const router = useRouter();
+  const locale = useLocale();
   const [mode, setMode] = useState<WriteMode>("text");
   const [url, setUrl] = useState("");
   const [urlLoading, setUrlLoading] = useState(false);
@@ -119,7 +123,11 @@ export default function PostCreateModal({ onClose, onSuccess, initialProduct, dr
 
       onSuccess();
       onClose();
-      if (data.status === "pending") alert("✅ 제출됐어요!\n검토 후 게시됩니다.");
+      if (data.status === "pending") {
+        alert("✅ 제출됐어요!\n검토 후 게시됩니다.");
+      } else {
+        router.push(`/${locale}/posts/${data.id}`);
+      }
     } catch {
       setError("글 작성에 실패했어요. 다시 시도해주세요.");
     } finally {

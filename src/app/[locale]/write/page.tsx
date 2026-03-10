@@ -117,7 +117,12 @@ export default function WritePage() {
       }
       if (res.status === 429) { setError(data.message ?? "잠시 후 다시 시도해주세요."); return; }
       if (!res.ok) throw new Error("Failed");
-      router.push(`/${locale}`);
+      if (data.status === "pending") {
+        alert("✅ 제출됐어요!\n검토 후 게시됩니다.");
+        router.push(`/${locale}`);
+      } else {
+        router.push(`/${locale}/posts/${data.id}`);
+      }
     } catch { setError("글 작성에 실패했어요. 다시 시도해주세요."); }
     finally { setSubmitting(false); }
   };
