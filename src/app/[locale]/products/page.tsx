@@ -150,7 +150,10 @@ export default async function ProductsPage({
 
             {/* Essay */}
             <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
-              <p className="text-sm font-bold">Essay</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold">Essay</p>
+                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">2026년 봄, 제목 공개</span>
+              </div>
               <p className="text-xs text-[var(--text-tertiary)]">AI와 함께 쓰는 에세이 · 소설</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                 모든 걸 잃은 개발자가, 아이들 저금통 10만 원을 마지막으로 다시 한번 도전하는 이야기.
