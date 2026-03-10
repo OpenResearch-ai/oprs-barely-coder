@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { routing, type Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,16 @@ export default function Header() {
   const pathname = usePathname();
   const [comingSoonLang, setComingSoonLang] = useState<Locale | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
   useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const switchLocale = (newLocale: Locale) => {
     if (newLocale !== "ko") {
@@ -166,18 +175,35 @@ export default function Header() {
         <div className="w-px h-4 bg-[var(--border)] shrink-0 hidden sm:block" />
 
         {/* Language switcher */}
-        <div className="flex items-center gap-0.5 shrink-0">
-          {routing.locales.map((loc) => (
-            <button key={loc} onClick={() => switchLocale(loc)}
-              className={cn(
-                "px-2 py-1 text-xs rounded-full transition-all",
-                locale === loc
-                  ? "bg-[var(--foreground)] text-white font-medium"
-                  : "text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--surface)]"
-              )}>
-              {LOCALE_LABELS[loc]}
-            </button>
-          ))}
+        <div className="relative shrink-0" ref={langRef}>
+          <button
+            onClick={() => setLangOpen(v => !v)}
+            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--surface)] transition-all">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M6.5 1C6.5 1 4.5 3.5 4.5 6.5s2 5.5 2 5.5M6.5 1c0 0 2 2.5 2 5.5s-2 5.5-2 5.5M1 6.5h11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+            {LOCALE_LABELS[locale]}
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className={cn("transition-transform", langOpen && "rotate-180")}>
+              <path d="M2 3.5l3 3 3-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          {langOpen && (
+            <div className="absolute right-0 top-full mt-1 w-32 rounded-xl border border-[var(--border-light)] bg-white shadow-lg overflow-hidden z-50">
+              {routing.locales.map((loc) => (
+                <button key={loc} onClick={() => { switchLocale(loc); setLangOpen(false); }}
+                  className={cn(
+                    "w-full text-left px-3 py-2 text-xs transition-colors",
+                    locale === loc
+                      ? "font-semibold text-[var(--purple)] bg-[var(--purple-light)]"
+                      : "text-[var(--text-secondary)] hover:bg-[var(--surface)]"
+                  )}>
+                  {LOCALE_LABELS[loc]}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
