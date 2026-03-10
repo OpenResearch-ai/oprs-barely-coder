@@ -90,8 +90,8 @@ export default async function ProductsPage({
         </div>
 
         {/* Vibes */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
+        <div className="mt-12">
+          <div className="flex items-center gap-3 mb-4">
             <p className="text-xs font-semibold tracking-widest uppercase text-[var(--text-tertiary)]">Vibes</p>
             <a href={`/${locale}?category=etc`}
               className="flex items-center gap-1 text-xs text-[var(--text-tertiary)] hover:text-[var(--purple)] transition-colors group">
@@ -104,54 +104,42 @@ export default async function ProductsPage({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
             {/* openresearch.ai */}
-            <div className="rounded-2xl p-5 flex flex-col gap-3"
-              style={{ background: "linear-gradient(135deg, #f5f5ff, #f0f0ff)", border: "1px solid rgba(71,74,255,0.12)" }}>
-              <div>
-                <p className="text-base font-bold">openresearch.ai</p>
-                <p className="text-xs text-[var(--text-tertiary)]">커뮤니티 플랫폼</p>
-              </div>
+            <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
+              <p className="text-sm font-bold">openresearch.ai</p>
+              <p className="text-xs text-[var(--text-tertiary)]">커뮤니티 플랫폼</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                 AI 에이전트들이 유저들과 함께 스스로 제품을 개선하는 공간.
               </p>
             </div>
 
             {/* Oh Taro */}
-            <div className="rounded-2xl p-5 flex flex-col gap-3"
-              style={{ background: "linear-gradient(135deg, #fdf4ff, #fef9ff)", border: "1px solid rgba(168,85,247,0.15)" }}>
+            <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-base font-bold">Oh Taro</p>
-                  <p className="text-xs text-[var(--text-tertiary)]">심리상담 & 타로</p>
-                </div>
-                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">심사 중</span>
+                <p className="text-sm font-bold">Oh Taro</p>
+                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">심사 중</span>
               </div>
+              <p className="text-xs text-[var(--text-tertiary)]">심리상담 & 타로</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                 타로가 돈이 된다하여 급하게 만들어 봄. AI와 함께하는 심리상담과 타로.
               </p>
             </div>
 
             {/* YouTube */}
-            <div className="rounded-2xl p-5 flex flex-col gap-3"
-              style={{ background: "linear-gradient(135deg, #fff8f8, #fff5f5)", border: "1px solid rgba(239,68,68,0.12)" }}>
+            <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-base font-bold">YouTube</p>
-                  <p className="text-xs text-[var(--text-tertiary)]">바이브코딩 · AI · 동기부여</p>
-                </div>
-                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">스텔스 중</span>
+                <p className="text-sm font-bold">YouTube</p>
+                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">스텔스 중</span>
               </div>
+              <p className="text-xs text-[var(--text-tertiary)]">바이브코딩 · AI · 동기부여</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                AI가 콘텐츠를 생산하고 소통하는 채널. 현재 스텔스모드로 운영 중이며 곧 공개 예정.
+                AI가 콘텐츠를 생산하고 소통하는 채널. 곧 공개 예정.
               </p>
             </div>
 
             {/* Essay */}
-            <div className="rounded-2xl p-5 flex flex-col gap-3"
-              style={{ background: "linear-gradient(135deg, #f8f9ff, #f5f7ff)", border: "1px solid rgba(71,74,255,0.1)" }}>
-              <div>
-                <p className="text-base font-bold">Essay</p>
-                <p className="text-xs text-[var(--text-tertiary)]">AI와 함께 쓰는 에세이 · 소설</p>
-              </div>
+            <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
+              <p className="text-sm font-bold">Essay</p>
+              <p className="text-xs text-[var(--text-tertiary)]">AI와 함께 쓰는 에세이 · 소설</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                 모든 걸 잃은 개발자가, 아이들 저금통 10만 원을 마지막으로 다시 한번 도전하는 이야기.
               </p>
