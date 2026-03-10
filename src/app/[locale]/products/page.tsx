@@ -119,7 +119,7 @@ export default async function ProductsPage({
                 <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">심사 중</span>
               </div>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                AI와 함께하는 심리상담과 타로. 당신의 마음을 들어줍니다.
+                타로가 돈이 된다하여 급하게 만들어 봄. AI와 함께하는 심리상담과 타로.
               </p>
             </div>
 
