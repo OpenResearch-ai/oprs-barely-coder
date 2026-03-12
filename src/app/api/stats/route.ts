@@ -25,9 +25,9 @@ async function collectAndReport() {
     { count: pendingPosts },
     { count: totalVotes },
     { count: newVotesDay },
-    // 신규 가입자 (auth.users via user_bans proxy — 직접 조회)
-    { data: recentUsers },
+    { data: recentPushUsers },
     { count: totalBans },
+    { data: authUsersData },
   ] = await Promise.all([
     db.from("posts").select("*", { count: "exact", head: true }).eq("status", "active"),
     db.from("posts").select("*", { count: "exact", head: true }).eq("status", "active").gte("created_at", oneHourAgo),
@@ -37,17 +37,25 @@ async function collectAndReport() {
     db.from("posts").select("*", { count: "exact", head: true }).eq("status", "pending"),
     db.from("votes").select("*", { count: "exact", head: true }),
     db.from("votes").select("*", { count: "exact", head: true }).gte("created_at", oneDayAgo),
-    // push_subscriptions = 알림 허용한 유저 (활성 유저 프록시)
     db.from("push_subscriptions").select("created_at").gte("created_at", oneWeekAgo),
     db.from("user_bans").select("*", { count: "exact", head: true }),
+    db.auth.admin.listUsers({ page: 1, perPage: 1000 }).then(r => r.data ?? { users: [] }),
   ]);
 
-  const newUsersWeek = recentUsers?.length ?? 0;
+  const newPushWeek = recentPushUsers?.length ?? 0;
+  const allUsers = (authUsersData as { users?: { created_at: string }[] })?.users ?? [];
+  const totalUsers = allUsers.length;
+  const newUsersDay = allUsers.filter(u => u.created_at >= oneDayAgo).length;
+  const newUsersWeek = allUsers.filter(u => u.created_at >= oneWeekAgo).length;
+
   const hour = now.getHours().toString().padStart(2, "0");
   const dateStr = now.toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul", month: "long", day: "numeric" });
 
   const msg = [
     `📊 *OpenResearch 통계* (${dateStr} ${hour}시)`,
+    ``,
+    `👤 *회원*`,
+    `  전체: ${totalUsers}명  |  오늘 신규: +${newUsersDay}  |  주간 신규: +${newUsersWeek}`,
     ``,
     `👥 *커뮤니티 활동*`,
     `  글 전체: ${totalPosts ?? 0}개  |  오늘: +${newPostsDay ?? 0}  |  1시간: +${newPostsHour ?? 0}`,
@@ -56,7 +64,7 @@ async function collectAndReport() {
     `  검토 대기: ${pendingPosts ?? 0}개`,
     ``,
     `📲 *알림 구독* (주간 신규)`,
-    `  이번 주 새 알림 허용: ${newUsersWeek}명`,
+    `  이번 주 새 알림 허용: ${newPushWeek}명`,
     ``,
     `🚫 *누적 밴*: ${totalBans ?? 0}건`,
     ``,

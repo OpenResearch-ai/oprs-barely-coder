@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { moderateContent } from "@/lib/content-moderator";
 import { checkBanStatus, banUser } from "@/lib/ban-manager";
-import { sendModerationRequest } from "@/lib/telegram";
+import { sendModerationRequest, sendNewPostNotification } from "@/lib/telegram";
 import { isAdmin, getAuthorName } from "@/lib/admin";
 import { checkRateLimit, formatRetryMessage } from "@/lib/rate-limiter";
 
@@ -139,17 +139,28 @@ export async function POST(req: NextRequest) {
 
   if (error) return Response.json({ error: error.message }, { status: 500 });
 
-  // ── Telegram review request ─────────────────────────
-  if (status === "pending" && post) {
-    sendModerationRequest({
-      id: post.id,
-      title: post.title,
-      content: post.content,
-      post_type: post.post_type,
-      product: post.product,
-      author_name: post.author_name,
-      ai_reason: moderation.reason,
-    }).catch(console.error);
+  // ── Telegram notifications ──────────────────────────
+  if (post) {
+    if (status === "pending") {
+      sendModerationRequest({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        post_type: post.post_type,
+        product: post.product,
+        author_name: post.author_name,
+        ai_reason: moderation.reason,
+      }).catch(console.error);
+    } else if (status === "active" && !admin) {
+      sendNewPostNotification({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        post_type: post.post_type,
+        product: post.product,
+        author_name: post.author_name,
+      }).catch(console.error);
+    }
   }
 
   return Response.json({

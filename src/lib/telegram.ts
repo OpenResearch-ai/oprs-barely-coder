@@ -51,6 +51,35 @@ export async function sendModerationRequest(post: {
   });
 }
 
+export async function sendNewPostNotification(post: {
+  id: string;
+  title: string;
+  content: string | null;
+  post_type: string;
+  product: string | null;
+  author_name: string;
+}) {
+  const typeEmoji: Record<string, string> = {
+    vibe_coding: "✨", ai: "🤖", showcase: "🚀", resource: "📎",
+    question: "❓", proposal: "💡", feature: "⚡", bug: "🐛", community: "💬",
+  };
+
+  const lines = [
+    `🆕 새 글이 올라왔어요!`,
+    ``,
+    `${typeEmoji[post.post_type] ?? "📝"} ${post.title}`,
+    post.content ? post.content.slice(0, 150) + (post.content.length > 150 ? "..." : "") : "",
+    ``,
+    `👤 ${post.author_name}  |  📌 ${post.post_type}${post.product ? `  |  🏷️ ${post.product}` : ""}`,
+    `🔗 openresearch.ai/posts/${post.id}`,
+  ].filter(Boolean);
+
+  await tgFetch("sendMessage", {
+    chat_id: CHAT_ID,
+    text: lines.join("\n"),
+  });
+}
+
 export async function sendNotification(message: string) {
   await tgFetch("sendMessage", {
     chat_id: CHAT_ID,
