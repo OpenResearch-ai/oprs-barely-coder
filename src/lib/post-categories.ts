@@ -19,7 +19,7 @@ export const CATEGORIES: Category[] = [
   { key: "question",    label: "질문",       color: "bg-amber-50 text-amber-700",  group: "community", emoji: "❓" },
   { key: "free",        label: "자유게시판", color: "bg-gray-100 text-gray-600",   group: "community", emoji: "💬" },
   // ── 기타 ──
-  { key: "etc", label: "기타", color: "bg-gray-100 text-gray-600", group: "openresearch", emoji: "📌" },
+  { key: "etc", label: "기타", color: "bg-gray-100 text-gray-600", group: "openresearch" },
 ];
 
 export const CATEGORY_MAP = Object.fromEntries(CATEGORIES.map(c => [c.key, c]));
@@ -41,7 +41,7 @@ export const TYPE_BADGE: Record<string, { label: string; color: string; emoji?: 
   question:    { label: "질문",       color: "bg-amber-50 text-amber-700",   emoji: "❓" },
   free:        { label: "자유게시판", color: "bg-gray-100 text-gray-600",    emoji: "💬" },
   proposal:    { label: "서비스 제안", color: "bg-violet-50 text-violet-700", emoji: "💡" }, // legacy
-  etc:         { label: "기타",       color: "bg-gray-100 text-gray-600",    emoji: "📌" },
+  etc:         { label: "기타",       color: "bg-gray-100 text-gray-600" },
   feature:     { label: "기능 요청",  color: "bg-indigo-50 text-indigo-700", emoji: "⚡" },
   bug:         { label: "버그 신고",  color: "bg-red-50 text-red-600",       emoji: "🐛" },
   community:   { label: "",           color: "" },

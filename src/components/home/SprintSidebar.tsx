@@ -162,7 +162,7 @@ export default function SprintSidebar() {
                 <span className="text-sm font-medium">oo.ai</span>
               </div>
               <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
-                가장 빠른 AI 검색. 그리고 검색을 넘어선 AI 에이전트 서비스
+                가장 빠른 AI 검색. 그리고 검색을 넘어선 AI 에이전트 서비스.
               </p>
             </div>
             <div className="flex items-center gap-1">

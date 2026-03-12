@@ -18,15 +18,16 @@ interface FilterItem {
   kind: "all" | "type" | "product";
   value: string;
   logo?: string;
+  emoji?: string;
   href?: string;
 }
 
 // TYPE_BADGE imported from post-categories.ts (single source of truth)
 
-const PRODUCT_BADGE: Record<string, string> = {
-  "oo.ai":    "bg-violet-50 text-violet-700",
-  "o talk":   "bg-blue-50 text-blue-700",
-  "platform": "bg-gray-50 text-gray-600",
+const PRODUCT_BADGE: Record<string, { color: string; logo?: string }> = {
+  "oo.ai":    { color: "bg-violet-50 text-violet-700", logo: "/ooai_logo.webp" },
+  "o talk":   { color: "bg-blue-50 text-blue-700",     logo: "/otalk_logo.jpg" },
+  "platform": { color: "bg-gray-50 text-gray-600" },
 };
 
 interface Post {
@@ -69,12 +70,12 @@ const STATIC_FILTERS: Omit<FilterItem, "href">[] = [
   ALL,
   // Community categories → all map to post_type
   ...communityCategories.map(c => ({
-    key: c.key, label: c.label, group: "community" as const, kind: "type" as const, value: c.key,
+    key: c.key, label: c.label, group: "community" as const, kind: "type" as const, value: c.key, emoji: c.emoji,
   })),
   { key: "ooai",  label: "oo.ai",  group: "or" as const, kind: "product" as const, value: "oo.ai",  logo: "/ooai_logo.webp" },
   { key: "talk",  label: "o talk", group: "or" as const, kind: "product" as const, value: "o talk", logo: "/otalk_logo.jpg" },
   ...orCategories.map(c => ({
-    key: c.key, label: c.label, group: "or" as const, kind: "type" as const, value: c.key,
+    key: c.key, label: c.label, group: "or" as const, kind: "type" as const, value: c.key, emoji: c.emoji,
   })),
 ];
 
@@ -205,6 +206,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
               unoptimized />
           </span>
         )}
+        {!f.logo && f.emoji && <span>{f.emoji}</span>}
         {f.label}
       </>
     );
@@ -375,11 +377,19 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
                         {badge.label}
                       </span>
                     )}
-                    {post.product && (
-                      <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full", PRODUCT_BADGE[post.product] ?? "bg-gray-50 text-gray-500")}>
-                        {post.product}
-                      </span>
-                    )}
+                    {post.product && (() => {
+                      const pb = PRODUCT_BADGE[post.product];
+                      return (
+                        <span className={cn("inline-flex items-center gap-0.5 text-[10px] font-medium px-1.5 py-0.5 rounded-full", pb?.color ?? "bg-gray-50 text-gray-500")}>
+                          {pb?.logo && (
+                            <span className="w-3 h-3 rounded-sm overflow-hidden shrink-0 inline-flex">
+                              <Image src={pb.logo} alt={post.product} width={12} height={12} className="object-cover" unoptimized />
+                            </span>
+                          )}
+                          {post.product}
+                        </span>
+                      );
+                    })()}
                   </div>
                   {/* HN/GeekNews 스타일: 제목 + (도메인) */}
                   <h3 className="text-sm font-medium leading-snug mb-1 group-hover:text-[var(--purple)] transition-colors line-clamp-2">

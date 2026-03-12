@@ -50,8 +50,11 @@ export default function OoAiCard({ sprint, items }: Props) {
           </span>
         </div>
 
-        <p className="text-[15px] text-[var(--text-secondary)] leading-relaxed mb-3">
-          가장 빠른 AI 검색. 그리고 검색을 넘어선 AI 에이전트 서비스
+        <p className="text-[15px] font-semibold text-[var(--foreground)] leading-snug mb-3">
+          누구나 쓸 수 있는 나만의 AI 에이전트.
+        </p>
+        <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-3">
+          가장 빠른 AI 검색. 그리고 검색을 넘어선 AI 에이전트 서비스.
         </p>
         <p className="text-sm text-[var(--text-tertiary)] mb-6">앱스토어 네이티브앱 심사 중.</p>
 
