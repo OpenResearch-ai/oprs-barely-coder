@@ -39,11 +39,11 @@ async function collectAndReport() {
     db.from("votes").select("*", { count: "exact", head: true }).gte("created_at", oneDayAgo),
     db.from("push_subscriptions").select("created_at").gte("created_at", oneWeekAgo),
     db.from("user_bans").select("*", { count: "exact", head: true }),
-    db.auth.admin.listUsers({ page: 1, perPage: 1000 }).then(r => r.data ?? { users: [] }),
+    db.auth.admin.listUsers({ page: 1, perPage: 1000 }),
   ]);
 
   const newPushWeek = recentPushUsers?.length ?? 0;
-  const allUsers = (authUsersData as { users?: { created_at: string }[] })?.users ?? [];
+  const allUsers = (authUsersData as unknown as { users?: { created_at: string }[] })?.users ?? [];
   const totalUsers = allUsers.length;
   const newUsersDay = allUsers.filter(u => u.created_at >= oneDayAgo).length;
   const newUsersWeek = allUsers.filter(u => u.created_at >= oneWeekAgo).length;
