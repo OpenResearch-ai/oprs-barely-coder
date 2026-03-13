@@ -128,7 +128,7 @@ export async function POST(
   return Response.json({ comment }, { status: 201 });
 }
 
-// Delete own comment
+// Soft-delete comment (is_deleted = true, content preserved in DB)
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -143,11 +143,25 @@ export async function DELETE(
   if (!user) return Response.json({ error: "Login required" }, { status: 401 });
 
   const db = createServiceClient();
-  const query = isAdmin(user.email)
-    ? db.from("comments").delete().eq("id", commentId).eq("post_id", postId)
-    : db.from("comments").delete().eq("id", commentId).eq("author_id", user.id);
 
-  const { error } = await query;
+  // Verify ownership before soft-deleting
+  const { data: comment } = await db
+    .from("comments")
+    .select("author_id")
+    .eq("id", commentId)
+    .eq("post_id", postId)
+    .single();
+
+  if (!comment) return Response.json({ error: "Not found" }, { status: 404 });
+  if (!isAdmin(user.email) && comment.author_id !== user.id) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { error } = await db
+    .from("comments")
+    .update({ is_deleted: true })
+    .eq("id", commentId);
+
   if (error) return Response.json({ error: error.message }, { status: 500 });
   return Response.json({ success: true });
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
@@ -14,6 +14,7 @@ import { TYPE_BADGE, communityCategories, orCategories } from "@/lib/post-catego
 interface FilterItem {
   key: string;
   label: string;
+  labelEn?: string;
   group: "all" | "community" | "or";
   kind: "all" | "type" | "product";
   value: string;
@@ -45,15 +46,21 @@ interface Post {
   image_url?: string | null;
 }
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, locale = "ko"): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const m = Math.floor(diff / 60000);
   const h = Math.floor(m / 60);
   const d = Math.floor(h / 24);
-  if (d > 0) return `${d}일 전`;
-  if (h > 0) return `${h}시간 전`;
-  if (m > 0) return `${m}분 전`;
-  return "방금 전";
+  if (locale === "ko") {
+    if (d > 0) return `${d}일 전`;
+    if (h > 0) return `${h}시간 전`;
+    if (m > 0) return `${m}분 전`;
+    return "방금 전";
+  }
+  if (d > 0) return `${d}d ago`;
+  if (h > 0) return `${h}h ago`;
+  if (m > 0) return `${m}m ago`;
+  return "Just now";
 }
 
 interface Props {
@@ -70,17 +77,18 @@ const STATIC_FILTERS: Omit<FilterItem, "href">[] = [
   ALL,
   // Community categories → all map to post_type
   ...communityCategories.map(c => ({
-    key: c.key, label: c.label, group: "community" as const, kind: "type" as const, value: c.key, emoji: c.emoji,
+    key: c.key, label: c.label, labelEn: c.labelEn, group: "community" as const, kind: "type" as const, value: c.key, emoji: c.emoji,
   })),
-  { key: "ooai",  label: "oo.ai",  group: "or" as const, kind: "product" as const, value: "oo.ai",  logo: "/ooai_logo.webp" },
-  { key: "talk",  label: "o talk", group: "or" as const, kind: "product" as const, value: "o talk", logo: "/otalk_logo.jpg" },
+  { key: "ooai",  label: "oo.ai",  labelEn: "oo.ai",  group: "or" as const, kind: "product" as const, value: "oo.ai",  logo: "/ooai_logo.webp" },
+  { key: "talk",  label: "o talk", labelEn: "o talk", group: "or" as const, kind: "product" as const, value: "o talk", logo: "/otalk_logo.jpg" },
   ...orCategories.map(c => ({
-    key: c.key, label: c.label, group: "or" as const, kind: "type" as const, value: c.key, emoji: c.emoji,
+    key: c.key, label: c.label, labelEn: c.labelEn, group: "or" as const, kind: "type" as const, value: c.key, emoji: c.emoji,
   })),
 ];
 
 export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) {
   const t = useTranslations("ui");
+  const locale = useLocale();
   const router = useRouter();
   const ALL_I18N: FilterItem = { ...ALL_BASE, label: t("filter_all") };
 
@@ -143,6 +151,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
       if (authorFilter) params.set("author", authorFilter);
       params.set("sort", "new");
       params.set("limit", "20");
+      params.set("locale", locale);
 
       const res = await fetch(`/api/posts?${params}`);
       if (!res.ok) throw new Error(`API ${res.status}`);
@@ -191,6 +200,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
 
   const Chip = ({ f }: { f: FilterItem }) => {
     const isActive = active.key === f.key;
+    const displayLabel = locale !== "ko" && f.labelEn ? f.labelEn : f.label;
     const activeClass = f.group === "or"
       ? "bg-[var(--purple)] text-white border-[var(--purple)]"
       : "bg-[var(--foreground)] text-white border-[var(--foreground)]";
@@ -207,7 +217,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
           </span>
         )}
         {!f.logo && f.emoji && <span>{f.emoji}</span>}
-        {f.label}
+        {displayLabel}
       </>
     );
 
@@ -268,7 +278,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
         {/* Author filter badge */}
         {authorFilter && (
           <div className="flex items-center gap-1.5 mt-2">
-            <span className="text-xs text-[var(--text-tertiary)]">작성자:</span>
+            <span className="text-xs text-[var(--text-tertiary)]">{locale === "ko" ? "작성자:" : "Author:"}</span>
             <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full"
               style={{ background: "var(--purple-light)", color: "var(--purple)" }}>
               {authorFilter}
@@ -324,7 +334,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
 
         if (displayed.length === 0) return (
           <div className="text-center py-12 text-sm text-[var(--text-tertiary)]">
-            {searchQuery ? `"${searchQuery}" 검색 결과가 없어요.` : t("no_posts")}
+            {searchQuery ? (locale === "ko" ? `"${searchQuery}" 검색 결과가 없어요.` : `No results for "${searchQuery}".`) : t("no_posts")}
           </div>
         );
 
@@ -374,7 +384,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
                     {badge?.label && (
                       <span className={cn("text-[10px] font-semibold px-1.5 py-0.5 rounded-full inline-flex items-center gap-0.5", badge.color)}>
                         {badge.emoji && <span>{badge.emoji}</span>}
-                        {badge.label}
+                        {locale !== "ko" && badge.labelEn ? badge.labelEn : badge.label}
                       </span>
                     )}
                     {post.product && (() => {
@@ -416,7 +426,7 @@ export default function CommunityFeed({ initialProduct, onPostsLoaded }: Props) 
                       className="hover:text-[var(--purple)] hover:underline transition-colors font-medium">
                       {post.author_name}
                     </button>
-                    {" · "}{timeAgo(post.created_at)}{" · "}댓글 {post.comment_count}
+                    {" · "}{timeAgo(post.created_at, locale)}{" · "}{locale === "ko" ? "댓글" : "Comments"} {post.comment_count}
                   </p>
                   </div>{/* inner flex-1 end */}
 

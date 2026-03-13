@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
-const DISMISSED_KEY = "or-push-dismissed"; // localStorage key
+const DISMISSED_KEY = "or-push-dismissed";
 
 function urlBase64ToUint8Array(base64: string) {
   const padding = "=".repeat((4 - (base64.length % 4)) % 4);
@@ -39,6 +40,7 @@ async function registerPush() {
 }
 
 export default function PushNotificationSetup() {
+  const t = useTranslations("push");
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
@@ -46,21 +48,12 @@ export default function PushNotificationSetup() {
     if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
 
     const currentPerm = Notification.permission;
-
-    // 이미 허용됨 → 조용히 구독만 갱신
-    if (currentPerm === "granted") {
-      registerPush();
-      return;
-    }
-
-    // 거절됨 → 아무것도 하지 않음
+    if (currentPerm === "granted") { registerPush(); return; }
     if (currentPerm === "denied") return;
 
-    // default(미결정) 상태 → 이전에 "나중에" 눌렀는지 확인
     const dismissed = localStorage.getItem(DISMISSED_KEY);
-    if (dismissed) return; // 이미 닫은 적 있으면 다시 안 띄움
+    if (dismissed) return;
 
-    // 로그인 유저에게만 3초 후 배너
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) return;
@@ -77,7 +70,7 @@ export default function PushNotificationSetup() {
 
   const dismiss = () => {
     setShowBanner(false);
-    localStorage.setItem(DISMISSED_KEY, "1"); // 다시 안 뜨게
+    localStorage.setItem(DISMISSED_KEY, "1");
   };
 
   if (!showBanner) return null;
@@ -97,21 +90,19 @@ export default function PushNotificationSetup() {
           <div className="flex items-start gap-3 mb-3">
             <div className="text-2xl shrink-0">🔔</div>
             <div>
-              <p className="text-sm font-bold mb-0.5">댓글 알림 받기</p>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                내 글에 새 댓글이 달리면 브라우저 알림으로 바로 알려드려요.
-              </p>
+              <p className="text-sm font-bold mb-0.5">{t("title")}</p>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{t("desc")}</p>
             </div>
           </div>
           <div className="flex gap-2">
             <button onClick={requestPermission}
               className="flex-1 py-2 text-xs font-semibold text-white rounded-xl transition-all hover:opacity-90"
               style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
-              알림 허용
+              {t("allow")}
             </button>
             <button onClick={dismiss}
               className="px-4 py-2 text-xs text-[var(--text-secondary)] rounded-xl hover:bg-[var(--surface)] transition-all">
-              나중에
+              {t("later")}
             </button>
           </div>
         </div>

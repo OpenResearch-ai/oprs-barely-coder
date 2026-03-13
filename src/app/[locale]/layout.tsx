@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 import { HighlightProvider } from "@/lib/highlight-context";
 import RealtimeNotifications from "@/components/providers/RealtimeNotifications";
 import PushNotificationSetup from "@/components/providers/PushNotificationSetup";
+import LocaleSync from "@/components/providers/LocaleSync";
 
 type Props = {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         {children}
         <RealtimeNotifications />
         <PushNotificationSetup />
+        <LocaleSync />
       </HighlightProvider>
     </NextIntlClientProvider>
   );

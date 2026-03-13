@@ -5,6 +5,7 @@ import { checkBanStatus, banUser } from "@/lib/ban-manager";
 import { sendModerationRequest, sendNewPostNotification } from "@/lib/telegram";
 import { isAdmin, getAuthorName } from "@/lib/admin";
 import { checkRateLimit, formatRetryMessage } from "@/lib/rate-limiter";
+import { batchTranslatePostTitles } from "@/lib/translator";
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -16,6 +17,7 @@ export async function GET(req: NextRequest) {
   const sort = searchParams.get("sort") ?? "new";
   const limit = Math.min(parseInt(searchParams.get("limit") ?? "20"), 50);
   const offset = parseInt(searchParams.get("offset") ?? "0");
+  const locale = searchParams.get("locale") ?? "ko";
 
   let query = supabase.from("posts").select("*").eq("status", "active");
 
@@ -37,7 +39,19 @@ export async function GET(req: NextRequest) {
   const { data, error } = await query;
   if (error) return Response.json({ error: error.message }, { status: 500 });
 
-  return Response.json({ posts: data ?? [] });
+  const posts = data ?? [];
+
+  // Translate titles for non-Korean locales
+  if (locale !== "ko" && posts.length > 0) {
+    const titleMap = await batchTranslatePostTitles(posts, locale);
+    const translated = posts.map(p => ({
+      ...p,
+      title: titleMap[p.id] ?? p.title,
+    }));
+    return Response.json({ posts: translated });
+  }
+
+  return Response.json({ posts });
 }
 
 export async function POST(req: NextRequest) {

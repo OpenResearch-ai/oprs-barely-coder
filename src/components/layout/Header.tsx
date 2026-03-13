@@ -44,11 +44,20 @@ export default function Header() {
   }, []);
 
   const switchLocale = (newLocale: Locale) => {
-    if (newLocale !== "ko") {
+    if (newLocale !== "ko" && newLocale !== "en") {
       setComingSoonLang(newLocale);
       return;
     }
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    // Save preference to DB (best-effort, don't block)
+    fetch("/api/user/locale", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        preferred_locale: newLocale,
+        auto_locale: navigator.language.split("-")[0],
+      }),
+    }).catch(() => {});
     window.location.reload();
   };
 

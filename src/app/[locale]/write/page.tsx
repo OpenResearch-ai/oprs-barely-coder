@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/layout/Header";
 import CategoryPicker from "@/components/community/CategoryPicker";
@@ -12,6 +12,7 @@ import type { PostType } from "@/lib/post-categories";
 
 export default function WritePage() {
   const locale = useLocale();
+  const t = useTranslations("write");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading } = useAuth();
@@ -73,18 +74,18 @@ export default function WritePage() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { setError("5MB 이하 이미지만 업로드할 수 있어요."); return; }
+    if (file.size > 5 * 1024 * 1024) { setError(t("upload_too_large")); return; }
     setUploading(true); setError("");
     try {
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/posts/upload-image", { method: "POST", body: fd });
       const data = await res.json();
-      if (!res.ok) { setError(data.error ?? "업로드 실패"); return; }
+      if (!res.ok) { setError(data.error ?? t("upload_failed")); return; }
       setUploadedImageUrl(data.url);
       setImageUrl(data.url);
-      setOgImageUrl(""); // OG 제안 해제
-    } catch { setError("업로드에 실패했어요."); }
+      setOgImageUrl("");
+    } catch { setError(t("upload_failed")); }
     finally { setUploading(false); }
   };
 
@@ -92,8 +93,8 @@ export default function WritePage() {
   const removeImage = () => { setImageUrl(""); setUploadedImageUrl(""); setOgImageUrl(""); };
 
   const handleSubmit = async () => {
-    if (!category) { setError("카테고리를 선택해주세요."); return; }
-    if (!title.trim()) { setError("제목을 입력해주세요."); return; }
+    if (!category) { setError(t("error_no_category")); return; }
+    if (!title.trim()) { setError(t("error_no_title")); return; }
     setSubmitting(true); setError("");
     try {
       const res = await fetch("/api/posts", {
@@ -117,14 +118,13 @@ export default function WritePage() {
       }
       if (res.status === 429) { setError(data.message ?? "잠시 후 다시 시도해주세요."); setSubmitting(false); return; }
       if (!res.ok) throw new Error("Failed");
-      // 성공 시 submitting 유지 — 중복 제출 방지
       if (data.status === "pending") {
-        alert("✅ 제출됐어요!\n검토 후 게시됩니다.");
+        alert(t("pending_notice"));
         router.push("/");
       } else {
         router.push(`/posts/${data.post.id}`);
       }
-    } catch { setError("글 작성에 실패했어요. 다시 시도해주세요."); setSubmitting(false); }
+    } catch { setError(t("error_generic")); setSubmitting(false); }
   };
 
   if (!loading && !user) {
@@ -147,13 +147,13 @@ export default function WritePage() {
               <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <h1 className="text-base font-bold">새 글 작성</h1>
+          <h1 className="text-base font-bold">{t("page_title")}</h1>
         </div>
 
         <div className="py-6 space-y-6">
           {/* ① URL */}
           <div>
-            <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-2">링크 (선택)</label>
+            <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-2">{t("url_label")}</label>
             <div className="flex gap-2">
               <div className="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-xl border border-[var(--border-light)] bg-[var(--surface)]">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-[var(--text-tertiary)] shrink-0">
@@ -167,7 +167,7 @@ export default function WritePage() {
               </div>
               <button onClick={fetchUrl} disabled={!url.trim() || urlLoading}
                 className="px-3.5 py-2 text-xs font-semibold rounded-xl border border-[var(--purple)] text-[var(--purple)] hover:bg-[var(--purple-light)] disabled:opacity-40 transition-all shrink-0">
-                {urlLoading ? "분석 중..." : "AI 자동완성"}
+                {urlLoading ? t("analyzing") : t("ai_autocomplete")}
               </button>
             </div>
             {urlNotice && <p className="text-[10px] text-amber-600 mt-1.5 bg-amber-50 px-2 py-1 rounded-lg">⚠️ {urlNotice}</p>}
@@ -178,7 +178,7 @@ export default function WritePage() {
           {/* ② 카테고리 */}
           <div>
             <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-2.5">
-              카테고리 <span className="text-red-400">*</span>
+              {t("category_label")} <span className="text-red-400">*</span>
             </label>
 
             {/* AI 카테고리 변경 알림 */}
@@ -186,7 +186,7 @@ export default function WritePage() {
               <div className="flex items-center gap-2 mb-2 px-3 py-2 rounded-xl text-xs"
                 style={{ background: "var(--purple-light)", color: "var(--purple)" }}>
                 <span>🤖</span>
-                <span>AI가 카테고리를 <strong>{categoryChangedBy}</strong>으로 변경했어요. 맞지 않으면 직접 선택해주세요.</span>
+                <span dangerouslySetInnerHTML={{ __html: t("category_changed", { category: `<strong>${categoryChangedBy}</strong>` }) }} />
                 <button onClick={() => setCategoryChangedBy(null)} className="ml-auto opacity-60 hover:opacity-100 font-bold shrink-0">×</button>
               </div>
             )}
@@ -197,7 +197,7 @@ export default function WritePage() {
           {/* ③ 제목 */}
           <div>
             <textarea value={title} onChange={e => { if (e.target.value.length <= 100) { setTitle(e.target.value); setError(""); const t = e.target; t.style.height = "auto"; t.style.height = t.scrollHeight + "px"; } }}
-              placeholder="제목을 입력하세요"
+              placeholder={t("title_placeholder")}
               rows={1} maxLength={100}
               className="w-full text-xl font-bold outline-none resize-none placeholder:text-[var(--text-tertiary)] leading-snug bg-transparent overflow-hidden" />
             <div className={`text-[10px] text-right mt-1 ${title.length >= 90 ? "text-orange-500" : "text-[var(--text-tertiary)]"}`}>
@@ -210,7 +210,7 @@ export default function WritePage() {
           {/* ④ 내용 */}
           <div>
             <textarea value={content} onChange={e => { if (e.target.value.length <= 3000) setContent(e.target.value); }}
-              placeholder="내용을 입력하세요 (선택)"
+              placeholder={t("content_placeholder")}
               rows={8} maxLength={3000}
               className="w-full text-sm outline-none resize-none placeholder:text-[var(--text-tertiary)] leading-relaxed bg-transparent" />
             {content.length > 0 && (
@@ -222,12 +222,12 @@ export default function WritePage() {
 
           {/* ⑤ 이미지 */}
           <div>
-            <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-2">이미지 (선택)</label>
+            <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-2">{t("image_label")}</label>
 
             {/* OG 이미지 제안 */}
             {ogImageUrl && !imageUrl && (
               <div className="mb-3 p-3 rounded-xl border border-[var(--border-light)] bg-[var(--surface)]">
-                <p className="text-xs text-[var(--text-secondary)] mb-2">링크에서 대표 이미지를 찾았어요. 글에 추가할까요?</p>
+                <p className="text-xs text-[var(--text-secondary)] mb-2">{t("og_image_found")}</p>
                 <div className="flex gap-2 items-start">
                   <div className="w-20 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
                     <img src={ogImageUrl} alt="" className="w-full h-full object-cover"
@@ -237,11 +237,11 @@ export default function WritePage() {
                     <button onClick={useOgImage}
                       className="px-3 py-1.5 text-xs font-semibold text-white rounded-full"
                       style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
-                      이미지 추가
+                      {t("add_image")}
                     </button>
                     <button onClick={() => setOgImageUrl("")}
                       className="px-3 py-1.5 text-xs text-[var(--text-tertiary)] hover:text-[var(--foreground)] transition-colors">
-                      건너뛰기
+                      {t("skip")}
                     </button>
                   </div>
                 </div>
@@ -270,16 +270,16 @@ export default function WritePage() {
                     <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
                   </svg>
                 )}
-                {uploading ? "업로드 중..." : "이미지 업로드"}
+                {uploading ? t("uploading") : t("upload_image")}
               </button>
             )}
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-            <p className="text-[10px] text-[var(--text-tertiary)] mt-1.5">JPG, PNG, WebP, GIF · 최대 5MB</p>
+            <p className="text-[10px] text-[var(--text-tertiary)] mt-1.5">{t("image_help")}</p>
           </div>
 
           {error && (
             <div className="p-4 rounded-xl bg-red-50 border border-red-200">
-              <p className="text-xs font-semibold text-red-700 mb-1">게시할 수 없어요</p>
+              <p className="text-xs font-semibold text-red-700 mb-1">{t("error_title")}</p>
               <p className="text-xs text-red-600 whitespace-pre-line leading-relaxed">{error}</p>
             </div>
           )}
@@ -288,7 +288,7 @@ export default function WritePage() {
           <button onClick={handleSubmit} disabled={submitting || !title.trim() || !category}
             className="w-full py-3.5 text-sm font-semibold text-white rounded-2xl disabled:opacity-50 hover:opacity-90 transition-all"
             style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
-            {submitting ? "게시 중..." : "글 올리기"}
+            {submitting ? t("submitting") : t("submit")}
           </button>
         </div>
       </main>

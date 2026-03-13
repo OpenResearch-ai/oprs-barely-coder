@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import SprintItems from "./SprintItems";
 import type { Sprint, SprintItem } from "@/lib/supabase/types";
 
@@ -10,6 +11,9 @@ interface Props {
 }
 
 export default function OoAiCard({ sprint, items }: Props) {
+  const t = useTranslations("ooai");
+  const ts = useTranslations("sidebar");
+
   return (
     <div className="relative flex flex-col rounded-3xl overflow-hidden"
       style={{
@@ -46,22 +50,22 @@ export default function OoAiCard({ sprint, items }: Props) {
           </div>
           <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-green-600 bg-green-50 border border-green-100 px-3 py-1 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            라이브
+            {ts("live")}
           </span>
         </div>
 
         <p className="text-[15px] font-semibold text-[var(--foreground)] leading-snug mb-3">
-          누구나 쓸 수 있는 나만의 AI 에이전트.
+          {t("tagline")}
         </p>
         <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-3">
-          가장 빠른 AI 검색. 그리고 검색을 넘어선 AI 에이전트 서비스.
+          {t("desc")}
         </p>
-        <p className="text-sm text-[var(--text-tertiary)] mb-6">앱스토어 네이티브앱 심사 중.</p>
+        <p className="text-sm text-[var(--text-tertiary)] mb-6">{t("app_review")}</p>
 
         <a href="https://oo.ai" target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5"
           style={{ background: "linear-gradient(135deg, #474aff, #a54bff)", boxShadow: "0 4px 20px rgba(71,74,255,0.3)" }}>
-          oo.ai 열기
+          {t("open")}
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
             <path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>

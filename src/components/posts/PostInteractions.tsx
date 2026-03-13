@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { isAdmin } from "@/lib/admin";
 import LoginModal from "@/components/auth/LoginModal";
@@ -17,6 +18,7 @@ interface Comment {
   image_url?: string | null;
   created_at: string;
   parent_id: string | null;
+  is_deleted?: boolean;
 }
 
 interface Props {
@@ -26,15 +28,21 @@ interface Props {
   initialComments: Comment[];
 }
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, locale = "ko"): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const m = Math.floor(diff / 60000);
   const h = Math.floor(m / 60);
   const d = Math.floor(h / 24);
-  if (d > 0) return `${d}일 전`;
-  if (h > 0) return `${h}시간 전`;
-  if (m > 0) return `${m}분 전`;
-  return "방금 전";
+  if (locale === "ko") {
+    if (d > 0) return `${d}일 전`;
+    if (h > 0) return `${h}시간 전`;
+    if (m > 0) return `${m}분 전`;
+    return "방금 전";
+  }
+  if (d > 0) return `${d}d ago`;
+  if (h > 0) return `${h}h ago`;
+  if (m > 0) return `${m}m ago`;
+  return "Just now";
 }
 
 function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
@@ -64,6 +72,8 @@ function Avatar({ name, avatar }: { name: string; avatar?: string | null }) {
 
 export default function PostInteractions({ postId, authorId, initialUpvotes, initialComments }: Props) {
   const router = useRouter();
+  const t = useTranslations("interactions");
+  const locale = useLocale();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -112,16 +122,16 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { setError("5MB 이하 이미지만 첨부할 수 있어요."); return; }
+    if (file.size > 5 * 1024 * 1024) { setError(t("image_size_error")); return; }
     setUploading(true); setError("");
     try {
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/posts/upload-image", { method: "POST", body: fd });
       const data = await res.json();
-      if (!res.ok) { setError(data.error ?? "업로드 실패"); return; }
+      if (!res.ok) { setError(data.error ?? t("upload_failed")); return; }
       setCommentImage(data.url);
-    } catch { setError("업로드 실패"); }
+    } catch { setError(t("upload_failed")); }
     finally { setUploading(false); }
   };
 
@@ -146,23 +156,23 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
         }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.message ?? "댓글 작성에 실패했어요."); return; }
+      if (!res.ok) { setError(data.message ?? t("comment_failed")); return; }
       setComments(prev => [...prev, data.comment]);
       setCommentText("");
       setCommentImage("");
       setReplyTo(null);
-    } catch { setError("댓글 작성에 실패했어요."); }
+    } catch { setError(t("comment_failed")); }
     finally { setSubmitting(false); }
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    if (!confirm("이 댓글을 삭제할까요?")) return;
+    if (!confirm(t("delete_confirm"))) return;
     const res = await fetch(`/api/posts/${postId}/comment?commentId=${commentId}`, { method: "DELETE" });
-    if (res.ok) setComments(prev => prev.filter(c => c.id !== commentId && c.parent_id !== commentId));
+    if (res.ok) setComments(prev => prev.map(c => c.id === commentId ? { ...c, is_deleted: true } : c));
   };
 
   const handleDeletePost = async () => {
-    if (!confirm("이 글을 삭제할까요?")) return;
+    if (!confirm(t("delete_post_confirm"))) return;
     setDeleting(true);
     const res = await fetch(`/api/posts/${postId}`, { method: "DELETE" });
     if (res.ok) router.push("/");
@@ -177,37 +187,46 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
 
   const CommentItem = ({ comment, isReply = false }: { comment: Comment; isReply?: boolean }) => (
     <div className={cn("flex gap-2.5", isReply && "ml-9 mt-3")}>
-      <Avatar name={comment.author_name} avatar={comment.author_avatar} />
+      {comment.is_deleted
+        ? <div className="w-7 h-7 rounded-full shrink-0 bg-[var(--surface)]" />
+        : <Avatar name={comment.author_name} avatar={comment.author_avatar} />
+      }
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1 flex-wrap">
-          <span className={cn("text-xs font-bold", comment.author_name === "OpenResearch" && "text-[var(--purple)]")}>
-            {comment.author_name}
-          </span>
-          <span className="text-[10px] text-[var(--text-tertiary)]">{timeAgo(comment.created_at)}</span>
-        </div>
-        <p className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap break-words">
-          {comment.content}
-        </p>
-        {comment.image_url && (
-          <div className="mt-2 rounded-xl overflow-hidden inline-block max-w-xs border border-[var(--border-light)]">
-            <img src={comment.image_url} alt="" className="w-full object-cover max-h-48"
-              onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
-          </div>
+        {comment.is_deleted ? (
+          <p className="text-sm text-[var(--text-tertiary)] italic">{t("deleted")}</p>
+        ) : (
+          <>
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span className={cn("text-xs font-bold", comment.author_name === "OpenResearch" && "text-[var(--purple)]")}>
+                {comment.author_name}
+              </span>
+              <span className="text-[10px] text-[var(--text-tertiary)]">{timeAgo(comment.created_at, locale)}</span>
+            </div>
+            <p className="text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap break-words">
+              {comment.content}
+            </p>
+            {comment.image_url && (
+              <div className="mt-2 rounded-xl overflow-hidden inline-block max-w-xs border border-[var(--border-light)]">
+                <img src={comment.image_url} alt="" className="w-full object-cover max-h-48"
+                  onError={e => (e.currentTarget.parentElement!.style.display = "none")} />
+              </div>
+            )}
+            <div className="flex items-center gap-3 mt-1.5">
+              {!isReply && (
+                <button onClick={() => startReply(comment)}
+                  className="text-[10px] text-[var(--text-tertiary)] hover:text-[var(--purple)] transition-colors font-medium">
+                  {t("reply")}
+                </button>
+              )}
+              {canDeleteComment(comment) && (
+                <button onClick={() => handleDeleteComment(comment.id)}
+                  className="text-[10px] text-red-400 hover:text-red-600 transition-colors">
+                  {t("delete_post")}
+                </button>
+              )}
+            </div>
+          </>
         )}
-        <div className="flex items-center gap-3 mt-1.5">
-          {!isReply && (
-            <button onClick={() => startReply(comment)}
-              className="text-[10px] text-[var(--text-tertiary)] hover:text-[var(--purple)] transition-colors font-medium">
-              답글
-            </button>
-          )}
-          {canDeleteComment(comment) && (
-            <button onClick={() => handleDeleteComment(comment.id)}
-              className="text-[10px] text-red-400 hover:text-red-600 transition-colors">
-              삭제
-            </button>
-          )}
-        </div>
         {!isReply && replies(comment.id).map(reply => (
           <CommentItem key={reply.id} comment={reply} isReply />
         ))}
@@ -234,7 +253,7 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
               fill={upvoted ? "white" : "none"}
               stroke={upvoted ? "white" : "currentColor"} strokeWidth="1.3" strokeLinejoin="round"/>
           </svg>
-          추천 {upvotes}
+          {t("upvote")} {upvotes}
         </button>
         {canDeletePost && (
           <button onClick={handleDeletePost} disabled={deleting}
@@ -243,7 +262,7 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
                 <path d="M1.5 3h8M4 3V2h3v1M2.5 3l.5 6h5l.5-6" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>}
-            {deleting ? "삭제 중" : "삭제"}
+            {deleting ? t("deleting") : t("delete_post")}
           </button>
         )}
       </div>
@@ -251,15 +270,15 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
       {/* Comments */}
       <section className="pt-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-sm font-bold">댓글 {comments.length}</h2>
+          <h2 className="text-sm font-bold">{t("comments_count", { count: comments.filter(c => !c.is_deleted).length })}</h2>
           <button onClick={() => { if (!user) { setShowLogin(true); return; } scrollToInput(); }}
             className="text-xs font-semibold px-3 py-1.5 rounded-full text-[var(--purple)] bg-[var(--purple-light)] hover:opacity-80 transition-all">
-            댓글 달기
+            {t("write_comment")}
           </button>
         </div>
 
         {roots.length === 0 ? (
-          <p className="text-sm text-[var(--text-tertiary)] text-center py-8">첫 댓글을 남겨보세요!</p>
+          <p className="text-sm text-[var(--text-tertiary)] text-center py-8">{t("no_comments")}</p>
         ) : (
           <div className="space-y-5 mb-8">
             {roots.map(comment => <CommentItem key={comment.id} comment={comment} />)}
@@ -274,18 +293,17 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
               <div className="flex-1 space-y-2">
                 {replyTo && (
                   <div className="flex items-center gap-2 text-xs text-[var(--purple)] bg-[var(--purple-light)] px-3 py-1.5 rounded-xl">
-                    <span>@{replyTo.name} 에게 답글</span>
+                    <span>{t("reply_to", { name: replyTo.name })}</span>
                     <button onClick={() => setReplyTo(null)} className="ml-auto opacity-60 hover:opacity-100 font-bold">×</button>
                   </div>
                 )}
                 <textarea ref={inputRef} value={commentText}
                   onChange={e => setCommentText(e.target.value)}
                   onKeyDown={e => { if (e.key === "Enter" && e.metaKey) handleComment(); }}
-                  placeholder={replyTo ? `@${replyTo.name}에게 답글...` : "댓글을 입력하세요 (Cmd+Enter)"}
+                  placeholder={replyTo ? t("reply_placeholder", { name: replyTo.name }) : t("comment_placeholder")}
                   rows={3}
                   className="w-full text-sm px-3 py-2.5 rounded-2xl border border-[var(--border-light)] outline-none focus:border-[var(--purple-muted)] resize-none bg-[var(--surface)] leading-relaxed transition-all" />
 
-                {/* 이미지 미리보기 */}
                 {commentImage && (
                   <div className="relative inline-block">
                     <img src={commentImage} alt="" className="h-24 w-auto rounded-xl border border-[var(--border-light)] object-cover" />
@@ -299,7 +317,6 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
                 {error && <p className="text-xs text-red-500">{error}</p>}
 
                 <div className="flex items-center justify-between">
-                  {/* 이미지 첨부 버튼 */}
                   <button onClick={() => fileRef.current?.click()} disabled={uploading || !!commentImage}
                     className="flex items-center gap-1.5 text-xs text-[var(--text-tertiary)] hover:text-[var(--purple)] transition-colors disabled:opacity-40">
                     {uploading ? (
@@ -311,14 +328,14 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
                         <path d="M1.5 9l3-3 2.5 2.5 2-2 3 3" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     )}
-                    {uploading ? "업로드 중..." : "이미지"}
+                    {uploading ? t("uploading") : t("image")}
                   </button>
                   <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
                   <button onClick={handleComment} disabled={submitting || (!commentText.trim() && !commentImage)}
                     className="px-4 py-1.5 text-xs font-semibold text-white rounded-full disabled:opacity-50 hover:opacity-90 transition-all"
                     style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}>
-                    {submitting ? "올리는 중..." : replyTo ? "답글 올리기" : "댓글 올리기"}
+                    {submitting ? t("submitting") : replyTo ? t("submit_reply") : t("submit_comment")}
                   </button>
                 </div>
               </div>
@@ -326,7 +343,7 @@ export default function PostInteractions({ postId, authorId, initialUpvotes, ini
           ) : (
             <button onClick={() => setShowLogin(true)}
               className="w-full py-3 text-sm text-[var(--text-secondary)] border border-dashed border-[var(--border)] rounded-2xl hover:border-[var(--purple-muted)] hover:text-[var(--purple)] transition-all">
-              댓글을 달려면 로그인이 필요해요
+              {t("login_to_comment")}
             </button>
           )}
         </div>

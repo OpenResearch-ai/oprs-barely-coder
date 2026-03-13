@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import Image from "next/image";
 import Header from "@/components/layout/Header";
 import ChatBot from "@/components/chatbot/ChatBot";
@@ -13,6 +13,7 @@ export default async function ProductsPage() {
   const supabase = await createClient();
   const t = await getTranslations("ui");
   const tNav = await getTranslations("nav");
+  const tp = await getTranslations("productsPage");
 
   const sprintRes = await supabase
     .from("sprints")
@@ -50,7 +51,7 @@ export default async function ProductsPage() {
             {t("products_tagline")}
           </p>
           <p className="text-sm text-[var(--text-tertiary)]">
-            BUILD IN PUBLIC! 커뮤니티가 방향을 정하고, AI 에이전트가 개발합니다.
+            {tp("build_in_public")}
           </p>
         </div>
 
@@ -67,7 +68,7 @@ export default async function ProductsPage() {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-xs font-bold text-[var(--purple)]">{activeSprint.week_label} 스프린트</span>
+                <span className="text-xs font-bold text-[var(--purple)]">{activeSprint.week_label} {tp("sprint_suffix")}</span>
                 <span className="text-[10px] text-[var(--text-tertiary)]">
                   · {activeSprint.total_posts_analyzed}개 포스트 · {activeSprint.total_votes_counted}표
                 </span>
@@ -91,7 +92,7 @@ export default async function ProductsPage() {
             <p className="text-xs font-semibold tracking-widest uppercase text-[var(--text-tertiary)]">Vibes</p>
             <a href="/?category=etc"
               className="flex items-center gap-1 text-xs text-[var(--text-tertiary)] hover:text-[var(--purple)] transition-colors group">
-              커뮤니티
+              {tp("community_link")}
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="group-hover:translate-x-0.5 transition-transform">
                 <path d="M2 6h8M6 3l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -107,9 +108,9 @@ export default async function ProductsPage() {
                 </div>
                 <p className="text-sm font-bold">openresearch.ai</p>
               </div>
-              <p className="text-xs text-[var(--text-tertiary)]">커뮤니티 플랫폼</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{tp("oprs_tagline")}</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                AI 에이전트들이 유저들과 함께 스스로 제품을 개선하는 공간.
+                {tp("oprs_desc")}
               </p>
             </div>
 
@@ -117,11 +118,11 @@ export default async function ProductsPage() {
             <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-bold">Oh Taro</p>
-                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">심사 중</span>
+                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">{tp("ohtaro_status")}</span>
               </div>
-              <p className="text-xs text-[var(--text-tertiary)]">심리상담 & 타로</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{tp("ohtaro_tagline")}</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                타로가 돈이 된다하여 급하게 만들어 봄. AI와 함께하는 심리상담과 타로.
+                {tp("ohtaro_desc")}
               </p>
             </div>
 
@@ -135,11 +136,11 @@ export default async function ProductsPage() {
                   </svg>
                   <p className="text-sm font-bold">YouTube</p>
                 </div>
-                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">스텔스 중</span>
+                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">{tp("youtube_status")}</span>
               </div>
-              <p className="text-xs text-[var(--text-tertiary)]">바이브코딩 · AI · 동기부여</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{tp("youtube_tagline")}</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                AI가 콘텐츠를 생산하고 소통하는 채널. 스텔스모드로 운영 중. 곧 공개 예정.
+                {tp("youtube_desc")}
               </p>
             </div>
 
@@ -147,11 +148,11 @@ export default async function ProductsPage() {
             <div className="rounded-2xl p-5 flex flex-col gap-2 bg-[var(--surface)] border border-[var(--border-light)]">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-bold">Essay</p>
-                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">2026년 봄, 자극적인 제목 공개</span>
+                <span className="text-[10px] font-medium text-[var(--text-tertiary)] bg-white border border-[var(--border-light)] px-2 py-0.5 rounded-full">{tp("essay_status")}</span>
               </div>
-              <p className="text-xs text-[var(--text-tertiary)]">AI와 함께 쓰는 에세이 · 소설</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{tp("essay_tagline")}</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                모든 걸 잃은 개발자가, 아이들 저금통 10만원을 마지막으로 다시 한번 도전하는 이야기.
+                {tp("essay_desc")}
               </p>
             </div>
 

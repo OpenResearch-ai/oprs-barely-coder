@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import type { SprintItem } from "@/lib/supabase/types";
 
@@ -14,13 +15,15 @@ interface Props {
   communityHref?: string;
 }
 
-const STATUS: Record<ItemStatus, { dot: string; label: string; lightColor: string; darkColor: string }> = {
-  done:        { dot: "bg-green-400",              label: "완료",    lightColor: "text-green-500", darkColor: "text-green-400" },
-  in_progress: { dot: "bg-blue-400 animate-pulse", label: "진행 중", lightColor: "text-blue-500",  darkColor: "text-blue-400" },
-  planned:     { dot: "bg-gray-300",               label: "예정",    lightColor: "text-gray-400",  darkColor: "text-gray-500" },
-};
-
 export default function SprintItems({ items, product, weekLabel, hasSprint = true, dark = false, communityHref }: Props) {
+  const t = useTranslations("sprintItems");
+
+  const STATUS: Record<ItemStatus, { dot: string; label: string; lightColor: string; darkColor: string }> = {
+    done:        { dot: "bg-green-400",              label: t("done"),        lightColor: "text-green-500", darkColor: "text-green-400" },
+    in_progress: { dot: "bg-blue-400 animate-pulse", label: t("in_progress"), lightColor: "text-blue-500",  darkColor: "text-blue-400" },
+    planned:     { dot: "bg-gray-300",               label: t("planned"),     lightColor: "text-gray-400",  darkColor: "text-gray-500" },
+  };
+
   const filtered = items.filter((i) => i.product === product);
 
   const labelColor = dark ? "rgba(255,255,255,0.35)" : "var(--text-tertiary)";
@@ -31,10 +34,9 @@ export default function SprintItems({ items, product, weekLabel, hasSprint = tru
 
   return (
     <div>
-      {/* Label + Community button */}
       <div className="flex items-center gap-2 mb-3">
         <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: labelColor }}>
-          이번 주 스프린트
+          {t("sprint_title")}
         </span>
         {communityHref && (
           <a href={communityHref}
@@ -43,7 +45,7 @@ export default function SprintItems({ items, product, weekLabel, hasSprint = tru
               background: dark ? "rgba(71,74,255,0.3)" : "rgba(71,74,255,0.1)",
               color: dark ? "#a0a3ff" : "var(--purple)",
             }}>
-            커뮤니티
+            {t("community")}
             <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
               <path d="M1.5 6.5L6.5 1.5M6.5 1.5H3M6.5 1.5V5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -54,26 +56,20 @@ export default function SprintItems({ items, product, weekLabel, hasSprint = tru
         </span>
       </div>
 
-      {/* No sprint yet */}
       {!hasSprint ? (
         <div className="flex items-center gap-2 px-3 py-3 rounded-xl" style={{ background: emptyBg }}>
           <div className="w-4 h-4 rounded-full border-2 border-dashed shrink-0"
             style={{ borderColor: dark ? "rgba(255,255,255,0.15)" : "var(--border)" }} />
-          <p className="text-xs" style={{ color: mutedColor }}>
-            업데이트 예정
-          </p>
+          <p className="text-xs" style={{ color: mutedColor }}>{t("no_sprint")}</p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex items-center gap-2 px-3 py-3 rounded-xl" style={{ background: emptyBg }}>
           <div className="w-4 h-4 rounded-full border-2 border-dashed shrink-0"
             style={{ borderColor: dark ? "rgba(255,255,255,0.15)" : "var(--border)" }} />
-          <p className="text-xs" style={{ color: mutedColor }}>
-            이 작품의 스프린트 항목이 없어요. 커뮤니티에 의견을 남겨주세요.
-          </p>
+          <p className="text-xs" style={{ color: mutedColor }}>{t("no_items")}</p>
         </div>
       ) : (
         <div className="space-y-1">
-          {/* Progress bar */}
           {(() => {
             const done = filtered.filter(i => i.status === "done").length;
             const pct = Math.round((done / filtered.length) * 100);

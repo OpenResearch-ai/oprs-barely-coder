@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/post-categories";
 
@@ -22,6 +23,9 @@ const UNSELECTED = "bg-[var(--surface)] text-[var(--text-tertiary)] border-[var(
 const SELECTED   = "border-[var(--purple)] bg-[var(--purple)] text-white";
 
 export default function CategoryPicker({ value, onChange, product, onProductChange }: Props) {
+  const locale = useLocale();
+  const getLabel = (cat: { label: string; labelEn: string }) =>
+    locale !== "ko" ? cat.labelEn : cat.label;
   const communityGroups = CATEGORIES.filter(c => c.group === "community");
   const orGroups        = CATEGORIES.filter(c => c.group === "openresearch");
 
@@ -30,7 +34,7 @@ export default function CategoryPicker({ value, onChange, product, onProductChan
       {/* 커뮤니티 */}
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider shrink-0 w-24">
-          커뮤니티
+          {locale !== "ko" ? "Community" : "커뮤니티"}
         </span>
         {communityGroups.map(cat => {
           const isSelected = value === cat.key && !product;
@@ -42,7 +46,7 @@ export default function CategoryPicker({ value, onChange, product, onProductChan
                 isSelected ? SELECTED : UNSELECTED
               )}>
               {cat.emoji && <span>{cat.emoji}</span>}
-              {cat.label}
+              {getLabel(cat)}
             </button>
           );
         })}
@@ -51,7 +55,7 @@ export default function CategoryPicker({ value, onChange, product, onProductChan
       {/* 기타 */}
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider shrink-0 w-24">
-          기타
+          {locale !== "ko" ? "Other" : "기타"}
         </span>
 
         {/* 제품 태그 — 글쓰기 모달에서만 표시 */}
@@ -82,7 +86,7 @@ export default function CategoryPicker({ value, onChange, product, onProductChan
                 isSelected ? SELECTED : UNSELECTED
               )}>
               {cat.emoji && <span>{cat.emoji}</span>}
-              {cat.label}
+              {getLabel(cat)}
             </button>
           );
         })}

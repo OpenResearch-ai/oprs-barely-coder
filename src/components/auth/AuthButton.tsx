@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/hooks/useAuth";
 import { isAdmin } from "@/lib/admin";
 import LoginModal from "./LoginModal";
 
 export default function AuthButton() {
   const { user, loading, signOut } = useAuth();
+  const t = useTranslations("auth");
   const [showLogin, setShowLogin] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
@@ -23,7 +25,7 @@ export default function AuthButton() {
           className="px-4 py-1.5 text-xs font-semibold text-white rounded-full transition-all hover:opacity-90 shrink-0"
           style={{ background: "linear-gradient(135deg, #474aff, #a54bff)" }}
         >
-          로그인
+          {t("login")}
         </button>
         {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
       </>
@@ -69,7 +71,7 @@ export default function AuthButton() {
               <p className="text-xs font-semibold truncate">{name}</p>
               <p className="text-[10px] text-[var(--text-tertiary)] truncate">{user.email}</p>
               {admin && (
-                <span className="text-[9px] font-bold text-[var(--purple)]">관리자</span>
+                <span className="text-[9px] font-bold text-[var(--purple)]">{t("admin")}</span>
               )}
             </div>
 
@@ -80,7 +82,7 @@ export default function AuthButton() {
                 <circle cx="6.5" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.2"/>
                 <path d="M1.5 11c0-2.76 2.239-5 5-5s5 2.24 5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
               </svg>
-              프로필 설정
+              {t("profile_settings")}
             </a>
 
             <button
@@ -89,7 +91,7 @@ export default function AuthButton() {
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                 <path d="M5 11H2.5a1 1 0 01-1-1V3a1 1 0 011-1H5M9 9l3-3-3-3M12 6.5H5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              로그아웃
+              {t("logout")}
             </button>
           </div>
         </>

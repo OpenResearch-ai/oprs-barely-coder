@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import SprintItems from "./SprintItems";
 import type { Sprint, SprintItem } from "@/lib/supabase/types";
 
@@ -10,6 +11,9 @@ interface Props {
 }
 
 export default function OTalkCard({ sprint, items }: Props) {
+  const t = useTranslations("otalk");
+  const ts = useTranslations("sidebar");
+
   return (
     <div className="relative flex flex-col rounded-3xl overflow-hidden"
       style={{
@@ -43,18 +47,18 @@ export default function OTalkCard({ sprint, items }: Props) {
           </div>
           <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-gray-500 bg-gray-100 border border-gray-200 px-3 py-1 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
-            준비 중
+            {ts("coming_soon")}
           </span>
         </div>
 
         <p className="text-[15px] font-semibold text-[var(--foreground)] leading-snug mb-3">
-          카카오톡은 왜 무겁고 느리고 쓸데없는 기능 투성이일까?
+          {t("question")}
         </p>
         <p className="text-[14px] text-[var(--text-secondary)] leading-relaxed mb-6">
-          AI 네이티브 메신저. 세상에서 가장 가볍고 간단한 메신저. 앱 크기 10MB.
+          {t("desc")}
         </p>
 
-        <p className="text-sm text-[var(--text-tertiary)]">앱스토어 심사 중.</p>
+        <p className="text-sm text-[var(--text-tertiary)]">{t("app_review")}</p>
       </div>
 
       <div style={{ height: "1px", background: "linear-gradient(90deg, transparent, rgba(96,165,250,0.15), transparent)" }} />

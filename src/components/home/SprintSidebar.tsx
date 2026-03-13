@@ -12,64 +12,13 @@ interface SprintItem {
 }
 
 const SPRINT_ITEMS: SprintItem[] = [
-  {
-    id: "s1",
-    title: "Claude claude-sonnet-4-6 통합",
-    status: "done",
-    product: "oo.ai",
-  },
-  {
-    id: "s2",
-    title: "검색 결과 품질 개선",
-    status: "done",
-    product: "oo.ai",
-  },
-  {
-    id: "s3",
-    title: "커뮤니티 피드 (이 페이지!)",
-    status: "in_progress",
-    product: "platform",
-  },
-  {
-    id: "s4",
-    title: "티켓 → GitHub 연동",
-    status: "in_progress",
-    product: "platform",
-  },
-  {
-    id: "s5",
-    title: "다크 모드",
-    status: "planned",
-    product: "oo.ai",
-  },
-  {
-    id: "s6",
-    title: "o talk 베타 신청",
-    status: "planned",
-    product: "o talk",
-  },
+  { id: "s1", title: "Claude claude-sonnet-4-6 통합", status: "done", product: "oo.ai" },
+  { id: "s2", title: "검색 결과 품질 개선", status: "done", product: "oo.ai" },
+  { id: "s3", title: "커뮤니티 피드 (이 페이지!)", status: "in_progress", product: "platform" },
+  { id: "s4", title: "티켓 → GitHub 연동", status: "in_progress", product: "platform" },
+  { id: "s5", title: "다크 모드", status: "planned", product: "oo.ai" },
+  { id: "s6", title: "o talk 베타 신청", status: "planned", product: "o talk" },
 ];
-
-const STATUS_CONFIG = {
-  done: {
-    label: "완료",
-    color: "text-green-600",
-    bg: "bg-green-50",
-    dot: "bg-green-500",
-  },
-  in_progress: {
-    label: "진행 중",
-    color: "text-blue-600",
-    bg: "bg-blue-50",
-    dot: "bg-blue-500 animate-pulse",
-  },
-  planned: {
-    label: "예정",
-    color: "text-gray-500",
-    bg: "bg-gray-50",
-    dot: "bg-gray-300",
-  },
-};
 
 const PRODUCT_COLORS = {
   "oo.ai": "text-violet-600",
@@ -79,6 +28,13 @@ const PRODUCT_COLORS = {
 
 export default function SprintSidebar() {
   const t = useTranslations("sprint");
+  const ts = useTranslations("sidebar");
+
+  const STATUS_CONFIG = {
+    done:        { label: t("done"),        color: "text-green-600", bg: "bg-green-50", dot: "bg-green-500" },
+    in_progress: { label: t("in_progress"), color: "text-blue-600",  bg: "bg-blue-50",  dot: "bg-blue-500 animate-pulse" },
+    planned:     { label: t("planned"),     color: "text-gray-500",  bg: "bg-gray-50",  dot: "bg-gray-300" },
+  };
 
   const done = SPRINT_ITEMS.filter((i) => i.status === "done").length;
   const total = SPRINT_ITEMS.length;
@@ -112,29 +68,12 @@ export default function SprintSidebar() {
             const config = STATUS_CONFIG[item.status];
             return (
               <div key={item.id} className="flex items-start gap-2.5">
-                <div
-                  className={cn(
-                    "w-1.5 h-1.5 rounded-full mt-1.5 shrink-0",
-                    config.dot
-                  )}
-                />
+                <div className={cn("w-1.5 h-1.5 rounded-full mt-1.5 shrink-0", config.dot)} />
                 <div className="flex-1 min-w-0">
-                  <p
-                    className={cn(
-                      "text-xs leading-snug",
-                      item.status === "done"
-                        ? "line-through text-[var(--text-tertiary)]"
-                        : "text-[var(--foreground)]"
-                    )}
-                  >
+                  <p className={cn("text-xs leading-snug", item.status === "done" ? "line-through text-[var(--text-tertiary)]" : "text-[var(--foreground)]")}>
                     {item.title}
                   </p>
-                  <span
-                    className={cn(
-                      "text-[10px] font-medium",
-                      PRODUCT_COLORS[item.product]
-                    )}
-                  >
+                  <span className={cn("text-[10px] font-medium", PRODUCT_COLORS[item.product])}>
                     {item.product}
                   </span>
                 </div>
@@ -146,7 +85,7 @@ export default function SprintSidebar() {
 
       {/* Products Card */}
       <div className="bg-white border border-[var(--border-light)] rounded-xl p-4">
-        <h3 className="text-sm font-semibold mb-3">작품</h3>
+        <h3 className="text-sm font-semibold mb-3">{ts("products")}</h3>
         <div className="space-y-2.5">
           <a
             href="https://oo.ai"
@@ -162,12 +101,12 @@ export default function SprintSidebar() {
                 <span className="text-sm font-medium">oo.ai</span>
               </div>
               <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
-                가장 빠른 AI 검색. 그리고 검색을 넘어선 AI 에이전트 서비스.
+                {ts("ooai_desc")}
               </p>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] text-green-600 font-medium">라이브</span>
+              <span className="text-[10px] text-green-600 font-medium">{ts("live")}</span>
             </div>
           </a>
 
@@ -180,11 +119,11 @@ export default function SprintSidebar() {
                 <span className="text-sm font-medium">o talk</span>
               </div>
               <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
-                AI 메신저
+                {ts("otalk_desc")}
               </p>
             </div>
             <span className="text-[10px] text-[var(--text-tertiary)] font-medium">
-              준비 중
+              {ts("coming_soon")}
             </span>
           </div>
         </div>
@@ -207,7 +146,7 @@ export default function SprintSidebar() {
             @vibe.hacker
           </p>
           <p className="text-[10px] text-[var(--text-tertiary)] mt-0.5">
-            바이브 코딩 유튜브 채널
+            {ts("youtube_channel")}
           </p>
         </div>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-[var(--text-tertiary)] shrink-0">
@@ -218,11 +157,10 @@ export default function SprintSidebar() {
       {/* About Card */}
       <div className="bg-[var(--purple-light)] border border-purple-100 rounded-xl p-4">
         <p className="text-xs text-[var(--purple)] font-medium mb-1">
-          오픈리서치란?
+          {ts("about_title")}
         </p>
         <p className="text-xs text-purple-700 leading-relaxed">
-          에이전트가 일하는 회사. 0인 개발자 구조로 누구나 참여 가능.
-          커뮤니티 피드백이 실제 스프린트에 반영됩니다.
+          {ts("about_desc")}
         </p>
       </div>
     </aside>
