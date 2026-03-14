@@ -67,6 +67,92 @@ function decode(str: string): string {
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ");
 }
 
+// ── X.com / Twitter oEmbed (no API key required) ───────────────
+function isXUrl(url: string): boolean {
+  return /^https?:\/\/(www\.)?(twitter|x)\.com\/.+\/status\//i.test(url);
+}
+
+async function fetchXMeta(url: string): Promise<PageMeta | null> {
+  try {
+    // Normalize x.com → twitter.com for oEmbed
+    const normalized = url.replace(/x\.com/, "twitter.com");
+    const oEmbedUrl = `https://publish.twitter.com/oembed?url=${encodeURIComponent(normalized)}&omit_script=true`;
+    const res = await fetch(oEmbedUrl, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return null;
+    const data = await res.json();
+
+    // Extract tweet text from embedded HTML: <p ...>Tweet text</p>
+    const html: string = data.html ?? "";
+    const tweetText = html
+      .match(/<p[^>]*>([\s\S]*?)<\/p>/i)?.[1]
+      ?.replace(/<[^>]+>/g, " ")
+      ?.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+      ?.replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      ?.replace(/\s+/g, " ").trim() ?? "";
+
+    const authorName: string = data.author_name ?? "";
+
+    return {
+      title: tweetText.slice(0, 100) || `${authorName}의 트윗`,
+      description: tweetText,
+      siteName: "X (Twitter)",
+      imageUrl: "",
+      videoUrl: "",
+      text: `@${authorName}: ${tweetText}`,
+    };
+  } catch { return null; }
+}
+
+// ── Reddit JSON API ─────────────────────────────────────────────
+function isRedditUrl(url: string): boolean {
+  return /reddit\.com\/r\/.+\/comments\//i.test(url);
+}
+
+async function fetchRedditMeta(url: string): Promise<PageMeta | null> {
+  try {
+    const jsonUrl = url.replace(/\/?$/, ".json") + "?limit=1";
+    const res = await fetch(jsonUrl, {
+      headers: { "User-Agent": "openresearch-bot/1.0" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const post = data?.[0]?.data?.children?.[0]?.data;
+    if (!post) return null;
+
+    return {
+      title: decode(post.title ?? ""),
+      description: decode(post.selftext?.slice(0, 500) ?? post.url ?? ""),
+      siteName: `r/${post.subreddit}`,
+      imageUrl: post.thumbnail?.startsWith("http") ? post.thumbnail : "",
+      videoUrl: "",
+      text: decode(`${post.title}\n\n${post.selftext ?? ""}`).slice(0, 1500),
+    };
+  } catch { return null; }
+}
+
+// ── TikTok oEmbed ───────────────────────────────────────────────
+function isTikTokUrl(url: string): boolean {
+  return /tiktok\.com\/@.+\/video\//i.test(url);
+}
+
+async function fetchTikTokMeta(url: string): Promise<PageMeta | null> {
+  try {
+    const oEmbedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`;
+    const res = await fetch(oEmbedUrl, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      title: data.title ?? "",
+      description: `${data.author_name} · TikTok`,
+      siteName: "TikTok",
+      imageUrl: data.thumbnail_url ?? "",
+      videoUrl: url,
+      text: `${data.author_name}: ${data.title}`,
+    };
+  } catch { return null; }
+}
+
 // ── YouTube oEmbed + 썸네일 분석 ────────────────────────────────
 function extractYouTubeId(url: string): string | null {
   const patterns = [
@@ -160,9 +246,19 @@ export async function POST(req: NextRequest) {
     : "사용자가 선택한 카테고리: 없음 (AI가 적절히 판단)";
 
   try {
-    // YouTube URL은 전용 파서로 처리
-    const ytMeta = await fetchYouTubeMeta(url);
-    const meta = ytMeta ?? await fetchPageMeta(url);
+    // 플랫폼별 전용 파서 (우선순위 순)
+    let meta: PageMeta;
+    if (isXUrl(url)) {
+      meta = (await fetchXMeta(url)) ?? await fetchPageMeta(url);
+    } else if (isRedditUrl(url)) {
+      meta = (await fetchRedditMeta(url)) ?? await fetchPageMeta(url);
+    } else if (isTikTokUrl(url)) {
+      meta = (await fetchTikTokMeta(url)) ?? await fetchPageMeta(url);
+    } else {
+      const ytMeta = await fetchYouTubeMeta(url);
+      meta = ytMeta ?? await fetchPageMeta(url);
+    }
+    const isYouTube = !isXUrl(url) && !isRedditUrl(url) && !isTikTokUrl(url) && !!extractYouTubeId(url);
 
     // Analyze image/video thumbnail with Gemini multimodal
     const mediaUrl = meta.imageUrl || meta.videoUrl;
@@ -178,7 +274,6 @@ export async function POST(req: NextRequest) {
       meta.text && `본문: ${meta.text.slice(0, 2500)}`,
     ].filter(Boolean).join("\n");
 
-    const isYouTube = !!ytMeta;
     const isBlocked = !meta.title || meta.title === meta.siteName || meta.title === "Instagram";
     const notice = isBlocked && !imageAnalysis
       ? "이 링크는 내용을 자동으로 읽어올 수 없어요. 직접 제목과 내용을 수정해주세요."
@@ -187,7 +282,7 @@ export async function POST(req: NextRequest) {
     const prompt = `다음 정보를 바탕으로 오픈리서치 커뮤니티(AI, 바이브코딩)에 올릴 한국어 포스트를 만들어주세요.
 
 URL: ${url}
-플랫폼: ${meta.siteName}${isYouTube ? " (YouTube 영상)" : ""}
+플랫폼: ${meta.siteName}${isYouTube ? " (YouTube 영상)" : ""} ${isXUrl(url) ? " (X/Twitter 트윗)" : ""}
 ${categoryHint}
 ${context}
 

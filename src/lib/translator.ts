@@ -12,7 +12,7 @@ interface TranslateResult {
  * Translate text to the target locale using Gemini.
  * Returns null if translation fails (caller should fall back to original).
  */
-async function translateTexts(
+export async function translateTexts(
   texts: { title?: string; content?: string },
   targetLocale: string
 ): Promise<TranslateResult | null> {
