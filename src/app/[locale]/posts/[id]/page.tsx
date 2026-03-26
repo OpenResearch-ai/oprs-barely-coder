@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import Header from "@/components/layout/Header";
 import ChatBot from "@/components/chatbot/ChatBot";
 import PostInteractions from "@/components/posts/PostInteractions";
@@ -11,6 +12,44 @@ import { cn, extractYouTubeId } from "@/lib/utils";
 type Props = {
   params: Promise<{ locale: string; id: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: post } = await supabase
+    .from("posts")
+    .select("title, content, image_url, author_name")
+    .eq("id", id)
+    .eq("status", "active")
+    .single();
+
+  if (!post) return {};
+
+  const description = post.content
+    ? post.content.slice(0, 160).replace(/\n/g, " ")
+    : "OpenResearch 커뮤니티 포스트";
+  const image = post.image_url || "/oprs_logo.jpeg";
+  const url = `https://www.openresearch.ai/posts/${id}`;
+
+  return {
+    title: `${post.title} — OpenResearch`,
+    description,
+    openGraph: {
+      title: post.title,
+      description,
+      url,
+      siteName: "OpenResearch",
+      images: [{ url: image }],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+      images: [image],
+    },
+  };
+}
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
